@@ -647,16 +647,29 @@ let mediaStream = null;
 let enVoice = null;
 
 /* ============ STORAGE ============
-   Uses window.storage (Claude artifact) when available; falls back to
-   localStorage automatically when running standalone (e.g. deployed to
-   Vercel/Netlify), so saved data works in both environments. */
+   Priority: (1) window.storage — Claude artifact only.
+             (2) /api/data — cloud sync via Vercel serverless function +
+                 Upstash Redis, works across devices when deployed on Vercel
+                 with the storage integration configured.
+             (3) localStorage — local fallback (offline, or cloud not set up
+                 yet), and also used to keep a fast local mirror. */
 async function storageGet(key){
   try{
     if(window.storage && window.storage.get){
       const r = await window.storage.get(key, false);
       return r ? r.value : null;
     }
-  }catch(e){ /* fall through to localStorage */ }
+  }catch(e){ /* fall through */ }
+  try{
+    const res = await fetch(`/api/data?key=${encodeURIComponent(key)}`);
+    if(res.ok){
+      const data = await res.json();
+      if(data.value !== null && data.value !== undefined){
+        try{ localStorage.setItem(key, data.value); }catch(e){}
+        return data.value;
+      }
+    }
+  }catch(e){ /* fall through, e.g. not deployed on Vercel / offline */ }
   try{ return localStorage.getItem(key); }catch(e){ return null; }
 }
 async function storageSet(key, value){
@@ -665,7 +678,14 @@ async function storageSet(key, value){
       await window.storage.set(key, value, false);
       return;
     }
-  }catch(e){ /* fall through to localStorage */ }
+  }catch(e){ /* fall through */ }
+  try{
+    await fetch('/api/data', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ key, value })
+    });
+  }catch(e){ /* cloud unavailable, local save below still happens */ }
   try{ localStorage.setItem(key, value); }catch(e){ /* storage unavailable */ }
 }
 
