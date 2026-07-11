@@ -1,0 +1,1373 @@
+<meta charset="utf-8">
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Talk Lab · 영어 회화 연습</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F2F5F1;
+    --paper: #FFFFFF;
+    --ink: #17231F;
+    --ink-soft: #4E5C57;
+    --line: #E1E7E2;
+    --coral: #E8604C;
+    --coral-deep: #C94A38;
+    --teal: #1F6F64;
+    --teal-soft: #DCEEEA;
+    --gold: #E8A93D;
+    --gold-soft: #FBEED2;
+    --shadow: 0 8px 24px rgba(23, 35, 31, 0.08);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-t: env(safe-area-inset-top, 0px);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0; padding:0; height:100%; overscroll-behavior:none;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    display:flex; justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{
+    width:100%; max-width:480px; min-height:100vh;
+    background:var(--bg);
+    position:relative;
+    display:flex; flex-direction:column;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    padding: calc(14px + var(--safe-t)) 18px 14px;
+    background: var(--bg);
+    display:flex; align-items:center; gap:12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back-btn{
+    width:36px; height:36px; border-radius:50%;
+    border:none; background:var(--paper); box-shadow:var(--shadow);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; color:var(--ink); cursor:pointer; flex-shrink:0;
+  }
+  .topbar-title{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:19px;
+    line-height:1.2; flex:1;
+  }
+  .topbar-sub{ font-size:12px; color:var(--ink-soft); margin-top:1px;}
+  .counter{
+    font-family:'Space Mono', monospace; font-size:13px; font-weight:700;
+    background:var(--ink); color:#EFEFE8;
+    padding:5px 9px; border-radius:6px; letter-spacing:1px;
+  }
+
+  /* ---------- Home / topic list ---------- */
+  .hero{ padding: 22px 20px 6px; }
+  .hero-eyebrow{
+    font-family:'Space Mono', monospace; font-size:11.5px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--coral-deep); font-weight:700;
+  }
+  .hero-title{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:30px;
+    margin:6px 0 8px; line-height:1.15;
+  }
+  .hero-desc{ font-size:14px; color:var(--ink-soft); line-height:1.55; }
+
+  .topic-list{ padding: 8px 16px calc(24px + var(--safe-b)); display:flex; flex-direction:column; gap:9px; }
+  .topic-card{
+    background:var(--paper); border-radius:14px; padding:10px 12px;
+    box-shadow:var(--shadow); display:flex; align-items:center; gap:11px;
+    border:1px solid var(--line); cursor:pointer; transition:transform .12s ease;
+  }
+  .topic-card:active{ transform:scale(0.98); }
+  .topic-icon{
+    width:38px; height:38px; border-radius:10px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+  }
+  .topic-info{ flex:1; min-width:0; }
+  .topic-title-en{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:13.5px; }
+  .topic-title-ko{ font-size:11px; color:var(--ink-soft); margin-top:1px; }
+  .topic-progress{
+    display:flex; align-items:center; gap:5px; margin-top:5px;
+  }
+  .progress-track{ flex:1; height:4px; background:var(--line); border-radius:3px; overflow:hidden; }
+  .progress-fill{ height:100%; background:var(--teal); border-radius:3px; transition:width .3s ease; }
+  .progress-num{ font-family:'Space Mono', monospace; font-size:9.5px; color:var(--ink-soft); flex-shrink:0; }
+  .chev{ color:var(--ink-soft); font-size:15px; flex-shrink:0; }
+
+  /* ---------- Big mode-selector cards (home landing) ---------- */
+  .mode-grid{ display:flex; flex-direction:column; gap:14px; padding: 6px 20px 20px; }
+  .mode-card{
+    background:var(--paper); border-radius:22px; padding:22px 20px;
+    box-shadow:var(--shadow); border:1px solid var(--line); cursor:pointer;
+    display:flex; align-items:center; gap:16px; transition:transform .12s ease;
+  }
+  .mode-card:active{ transform:scale(0.98); }
+  .mode-icon{
+    width:60px; height:60px; border-radius:18px; flex-shrink:0; font-size:30px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .mode-info{ flex:1; min-width:0; }
+  .mode-title{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:19px; }
+  .mode-sub{ font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.5; }
+  .mode-count{
+    font-family:'Space Mono', monospace; font-size:10.5px; color:var(--ink-soft);
+    margin-top:8px; background:var(--bg); display:inline-block; padding:3px 8px; border-radius:20px;
+  }
+  .mode-chev{ color:var(--ink-soft); font-size:20px; flex-shrink:0; }
+
+
+  /* ---------- Dialogue screen ---------- */
+  .dialogue-wrap{ flex:1; display:flex; flex-direction:column; }
+  .dialogue-scroll{ flex:1; overflow-y:auto; padding: 16px 14px 20px; display:flex; flex-direction:column; gap:14px; }
+
+  .line-row{ display:flex; flex-direction:column; max-width:86%; }
+  .line-row.left{ align-self:flex-start; align-items:flex-start; }
+  .line-row.right{ align-self:flex-end; align-items:flex-end; }
+
+  .speaker-label{
+    font-family:'Space Mono', monospace; font-size:10.5px; font-weight:700;
+    color:var(--ink-soft); margin: 0 6px 4px; letter-spacing:.5px;
+  }
+
+  .bubble{
+    border-radius:16px; padding:12px 14px 11px; box-shadow:var(--shadow);
+    border:1px solid var(--line);
+  }
+  .line-row.left .bubble{ background:var(--paper); border-bottom-left-radius:4px; }
+  .line-row.right .bubble{ background:var(--teal-soft); border-bottom-right-radius:4px; border-color:#c6e3dc;}
+
+  .en-text{ font-size:15.5px; font-weight:600; line-height:1.4; }
+  .ko-text{ font-size:13px; color:var(--ink-soft); margin-top:5px; line-height:1.5; }
+
+  .tip-box{
+    margin-top:8px; background:var(--gold-soft); border-radius:10px;
+    padding:8px 10px; font-size:12px; color:#6b4f13; display:flex; gap:6px; line-height:1.5;
+  }
+  .tip-box span.icon{ flex-shrink:0; }
+
+  .line-actions{ display:flex; gap:7px; margin-top:9px; flex-wrap:wrap; }
+  .act-btn{
+    border:none; border-radius:20px; padding:7px 12px; font-size:12.5px;
+    font-weight:600; display:flex; align-items:center; gap:5px; cursor:pointer;
+    font-family:'Work Sans', sans-serif; transition:transform .1s ease, opacity .15s ease;
+  }
+  .act-btn:active{ transform:scale(0.94); }
+  .act-listen{ background:var(--teal); color:#fff; }
+  .act-record{ background:var(--coral); color:#fff; }
+  .act-record.recording{ background:var(--coral-deep); }
+  .act-play{ background:var(--paper); color:var(--ink); border:1.5px solid var(--line); }
+  .act-play:disabled{ opacity:.4; cursor:default; }
+  .act-compare{ background:var(--ink); color:#EFEFE8; }
+  .act-compare:disabled{ opacity:.35; cursor:default; }
+
+  .wave{ display:flex; align-items:center; gap:2px; height:12px; }
+  .wave-bar{ width:2.5px; background:currentColor; border-radius:2px; opacity:.9; }
+  @keyframes wavepulse{
+    0%,100%{ height:4px; } 50%{ height:12px; }
+  }
+  .wave-bar.animate{ animation: wavepulse .6s ease-in-out infinite; }
+
+  .done-check{
+    position:absolute; top:-6px; right:-6px; width:18px; height:18px;
+    background:var(--teal); border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-size:10px; color:#fff; border:2px solid var(--bg);
+  }
+  .bubble-wrap{ position:relative; }
+
+  /* ---------- Footer note on dialogue screen ---------- */
+  .mic-note{
+    text-align:center; font-size:11.5px; color:var(--ink-soft);
+    padding: 6px 24px calc(14px + var(--safe-b));
+    border-top:1px solid var(--line); background:var(--bg);
+  }
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:calc(30px + var(--safe-b));
+    transform:translateX(-50%); background:var(--ink); color:#fff;
+    padding:10px 18px; border-radius:24px; font-size:13px; font-weight:500;
+    box-shadow:0 8px 20px rgba(0,0,0,.25); z-index:100; opacity:0;
+    transition:opacity .25s ease, transform .25s ease; pointer-events:none;
+    max-width:86%; text-align:center;
+  }
+  .toast.show{ opacity:1; }
+
+  ::-webkit-scrollbar{ display:none; }
+
+  /* ---------- Real video section (home) ---------- */
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding: 4px 20px 2px; margin-top:6px;
+  }
+  .section-title{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:17px; }
+  .section-sub{ font-size:11.5px; color:var(--ink-soft); }
+  .video-scroll{
+    display:flex; gap:12px; overflow-x:auto; padding: 10px 20px 18px;
+    scroll-snap-type: x mandatory;
+  }
+  .video-card{
+    flex:0 0 auto; width:200px; background:var(--paper); border-radius:16px;
+    box-shadow:var(--shadow); border:1px solid var(--line); overflow:hidden;
+    cursor:pointer; scroll-snap-align:start; transition:transform .12s ease;
+  }
+  .video-card:active{ transform:scale(0.97); }
+  .video-thumb{
+    width:100%; height:112px; background-size:cover; background-position:center;
+    position:relative; background-color:#dde5e0;
+  }
+  .video-play{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(23,35,31,0.18);
+  }
+  .video-play span{
+    width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,0.92);
+    display:flex; align-items:center; justify-content:center; font-size:13px; color:var(--ink);
+    padding-left:2px;
+  }
+  .video-badge{
+    position:absolute; left:8px; top:8px; background:rgba(23,35,31,0.75); color:#fff;
+    font-size:9.5px; font-weight:600; padding:3px 7px; border-radius:20px; letter-spacing:.3px;
+  }
+  .video-body{ padding:10px 12px 12px; }
+  .video-title{ font-size:12.5px; font-weight:700; line-height:1.35; }
+  .video-channel{ font-size:10.5px; color:var(--ink-soft); margin-top:3px; }
+
+  /* ---------- Video detail screen ---------- */
+  .video-detail-scroll{ flex:1; overflow-y:auto; padding-bottom: calc(20px + var(--safe-b)); }
+  .video-frame-wrap{ width:100%; aspect-ratio:16/9; background:#000; }
+  .video-frame-wrap iframe{ width:100%; height:100%; border:0; display:block; }
+  .video-meta{ padding:16px 18px 4px; }
+  .video-meta-channel{
+    font-family:'Space Mono', monospace; font-size:11px; letter-spacing:1px;
+    text-transform:uppercase; color:var(--coral-deep); font-weight:700;
+  }
+  .video-meta-title{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:19px; margin-top:6px; line-height:1.3; }
+  .note-card{
+    margin: 14px 18px 0; background:var(--paper); border:1px solid var(--line);
+    border-radius:14px; padding:14px 15px; box-shadow:var(--shadow);
+  }
+  .note-card h4{
+    margin:0 0 8px; font-size:12.5px; font-family:'Space Mono', monospace;
+    letter-spacing:.5px; color:var(--teal); text-transform:uppercase;
+  }
+  .note-card p{ margin:0 0 8px; font-size:13.5px; line-height:1.6; color:var(--ink); }
+  .note-card p:last-child{ margin-bottom:0; }
+  .yt-open-btn{
+    margin: 16px 18px 0; display:flex; align-items:center; justify-content:center; gap:8px;
+    background:#FF0000; color:#fff; border:none; border-radius:24px; padding:12px;
+    font-size:14px; font-weight:700; width:calc(100% - 36px); cursor:pointer;
+    font-family:'Work Sans', sans-serif;
+  }
+  .video-disclaimer{
+    margin:16px 18px 0; font-size:11px; color:var(--ink-soft); line-height:1.6;
+    padding:10px 12px; background:var(--teal-soft); border-radius:10px;
+  }
+
+  /* ---------- Mic help modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(23,35,31,0.55); z-index:200;
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+  .modal-overlay.show{ opacity:1; pointer-events:auto; }
+  .modal-sheet{
+    width:100%; max-width:480px; background:var(--paper);
+    border-radius:22px 22px 0 0; padding: 22px 22px calc(22px + var(--safe-b));
+    transform:translateY(16px); transition:transform .22s ease;
+    max-height:82vh; overflow-y:auto;
+  }
+  .modal-overlay.show .modal-sheet{ transform:translateY(0); }
+  .modal-title{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:18px; margin-bottom:4px; }
+  .modal-sub{ font-size:13px; color:var(--ink-soft); margin-bottom:16px; line-height:1.5; }
+  .modal-step{ display:flex; gap:10px; margin-bottom:14px; align-items:flex-start; }
+  .modal-step-num{
+    flex-shrink:0; width:24px; height:24px; border-radius:50%; background:var(--teal-soft);
+    color:var(--teal); font-family:'Space Mono', monospace; font-weight:700; font-size:12px;
+    display:flex; align-items:center; justify-content:center; margin-top:1px;
+  }
+  .modal-step-text{ font-size:13.5px; line-height:1.55; }
+  .modal-step-text b{ color:var(--ink); }
+  .modal-close-btn{
+    margin-top:6px; width:100%; background:var(--ink); color:#EFEFE8; border:none;
+    border-radius:24px; padding:13px; font-size:14px; font-weight:700; cursor:pointer;
+    font-family:'Work Sans', sans-serif;
+  }
+
+  /* ---------- Phrase practice ---------- */
+  .add-phrase-btn{
+    margin:16px 16px 4px; display:flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--coral); color:#fff; border:none; border-radius:24px; padding:13px;
+    font-size:14.5px; font-weight:700; cursor:pointer; width:calc(100% - 32px);
+    font-family:'Work Sans', sans-serif;
+  }
+  .phrase-list{ display:flex; flex-direction:column; gap:12px; padding:10px 16px 18px; }
+  .phrase-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:16px;
+    padding:14px 14px 13px; box-shadow:var(--shadow); position:relative;
+  }
+  .phrase-del-btn{
+    position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%;
+    border:none; background:var(--bg); color:var(--ink-soft); font-size:12px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .form-group{ padding:0 18px; margin-bottom:14px; }
+  .form-label{ font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:6px; display:block; }
+  .form-input{
+    width:100%; border:1.5px solid var(--line); border-radius:12px; padding:11px 13px;
+    font-size:14px; font-family:'Work Sans', sans-serif; background:var(--paper); color:var(--ink);
+  }
+  .form-textarea{ min-height:76px; resize:vertical; line-height:1.5; }
+  .form-save-btn{
+    margin:8px 18px 0; width:calc(100% - 36px); background:var(--ink); color:#EFEFE8;
+    border:none; border-radius:24px; padding:13px; font-weight:700; font-size:14.5px;
+    cursor:pointer; font-family:'Work Sans', sans-serif;
+  }
+  .empty-hint{ padding: 6px 20px 4px; font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+  .para-title{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px; margin-bottom:4px; }
+  .para-preview{ font-size:13.5px !important; font-weight:400 !important; color:var(--ink-soft); line-height:1.5; }
+  .para-meta{
+    font-family:'Space Mono', monospace; font-size:10px; color:var(--ink-soft);
+    margin-top:8px; background:var(--bg); display:inline-block; padding:3px 8px; border-radius:20px;
+  }
+  .para-textarea{ min-height:120px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<div class="modal-overlay" id="micModalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-title">🎤 마이크 녹음이 안 되나요?</div>
+    <div class="modal-sub">채팅창 안 미리보기 화면은 보안상 마이크 접근이 막혀 있는 경우가 많아요. 아래 방법으로 열어보세요.</div>
+    <div class="modal-step">
+      <div class="modal-step-num">1</div>
+      <div class="modal-step-text">이 앱을 <b>다운로드한 파일(talk-lab.html)을 브라우저에 직접 열어주세요.</b> PC는 파일을 더블클릭하거나 크롬 주소창에 드래그, 모바일은 기본 브라우저 앱(Safari/Chrome)에서 파일을 열면 돼요.</div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-num">2</div>
+      <div class="modal-step-text">채팅 앱 안의 인앱 브라우저(카카오톡, 인스타그램 등)에서는 마이크가 막혀 있을 수 있어요. <b>Safari나 Chrome 앱에서 직접</b> 열어주세요.</div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-num">3</div>
+      <div class="modal-step-text">그래도 안 되면 브라우저 설정에서 이 사이트의 마이크 권한이 <b>차단(Block)</b>으로 되어있지 않은지 확인해주세요.</div>
+    </div>
+    <button class="modal-close-btn" id="micModalClose">알겠어요</button>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const TOPICS = [
+  {
+    id:'airport', icon:'✈️', color:'#EAF0FB',
+    titleEn:'Airport Check-in', titleKo:'공항 체크인',
+    roleA:'AGENT', roleB:'PASSENGER',
+    lines:[
+      {sp:'A', en:"Good morning. Can I see your passport and ticket, please?", ko:"안녕하세요. 여권과 티켓 좀 보여주시겠어요?"},
+      {sp:'B', en:"Here you go. I'd also like a window seat if possible.", ko:"여기 있습니다. 가능하면 창가 자리로 부탁드려요."},
+      {sp:'A', en:"Let me check... yes, I can do that for you.", ko:"확인해볼게요... 네, 가능합니다."},
+      {sp:'B', en:"Perfect. How many bags am I allowed to check in?", ko:"완벽하네요. 수하물은 몇 개까지 부칠 수 있나요?"},
+      {sp:'A', en:"You're allowed one checked bag up to 23 kilos.", ko:"위탁 수하물은 23킬로그램까지 1개 가능합니다.", tip:"“up to ~”는 “최대 ~까지”라는 뜻으로 자주 쓰이는 표현이에요."},
+      {sp:'B', en:"Got it. Mine should be right around that weight.", ko:"알겠습니다. 제 짐이 딱 그 정도 무게일 거예요."},
+      {sp:'A', en:"That's fine. Your gate is B12, boarding starts at 3 pm.", ko:"괜찮습니다. 탑승구는 B12이고, 탑승은 오후 3시에 시작됩니다."},
+      {sp:'B', en:"Thanks a lot. Have a nice day!", ko:"정말 감사합니다. 좋은 하루 보내세요!"}
+    ]
+  },
+  {
+    id:'hotel', icon:'🏨', color:'#F1E9F7',
+    titleEn:'Hotel Check-in', titleKo:'호텔 체크인',
+    roleA:'RECEPTIONIST', roleB:'GUEST',
+    lines:[
+      {sp:'A', en:"Good evening, welcome. Do you have a reservation with us?", ko:"안녕하세요, 어서 오세요. 예약하고 오셨나요?"},
+      {sp:'B', en:"Yes, it's under the name Kim, for two nights.", ko:"네, 김으로 예약했고, 2박이에요."},
+      {sp:'A', en:"Let me pull that up... great, a double room with a city view.", ko:"확인해볼게요... 좋습니다, 시티뷰 더블룸이네요."},
+      {sp:'B', en:"That sounds perfect. What time is breakfast served?", ko:"완벽하네요. 조식은 몇 시에 제공되나요?", tip:"“What time is ~ served?”는 식사 시간을 물을 때 자연스럽게 쓰는 표현이에요."},
+      {sp:'A', en:"Breakfast runs from seven to ten in the lobby restaurant.", ko:"조식은 7시부터 10시까지 로비 레스토랑에서 제공돼요."},
+      {sp:'B', en:"Great. And what's the Wi-Fi password?", ko:"좋네요. 와이파이 비밀번호는 뭔가요?"},
+      {sp:'A', en:"It's printed on your key card sleeve. Checkout is at noon.", ko:"키카드 케이스에 인쇄되어 있어요. 체크아웃은 정오까지입니다."},
+      {sp:'B', en:"Perfect, thank you so much for your help.", ko:"완벽해요, 도와주셔서 정말 감사합니다."}
+    ]
+  },
+  {
+    id:'hotelphone', icon:'📞', color:'#FDEFE0',
+    titleEn:'Booking a Hotel Room by Phone', titleKo:'전화로 호텔 방 예약하기',
+    roleA:'YOU', roleB:'HOTEL STAFF',
+    lines:[
+      {sp:'A', en:"Hi, I'd like to book a room for next weekend, please.", ko:"안녕하세요, 다음 주말에 묵을 방을 예약하고 싶은데요."},
+      {sp:'B', en:"Of course. What dates were you thinking?", ko:"물론이죠. 어떤 날짜를 생각하고 계세요?"},
+      {sp:'A', en:"Check in on Friday, and check out on Sunday.", ko:"금요일에 체크인해서 일요일에 체크아웃하려고요."},
+      {sp:'B', en:"Got it. Would you prefer a single or a double room?", ko:"알겠습니다. 싱글룸과 더블룸 중 어느 쪽을 원하세요?"},
+      {sp:'A', en:"A double room would be great. What's the rate per night?", ko:"더블룸이 좋을 것 같아요. 1박 요금이 어떻게 되나요?", tip:"“What's the rate?”는 숙박 요금을 물을 때 정중하게 쓰는 표현이에요."},
+      {sp:'B', en:"It's one hundred twenty dollars a night, breakfast included.", ko:"1박에 120달러이고, 조식 포함이에요."},
+      {sp:'A', en:"Sounds good. Can I pay with a credit card at check-in?", ko:"좋네요. 체크인할 때 신용카드로 결제해도 될까요?"},
+      {sp:'B', en:"Absolutely. We'll have everything ready for you on Friday.", ko:"물론입니다. 금요일에 모든 준비를 해두겠습니다."}
+    ]
+  },
+  {
+    id:'bankloan', icon:'🏦', color:'#E7F1F6',
+    titleEn:'Asking About a Bank Loan', titleKo:'은행에서 대출 상담하기',
+    roleA:'CUSTOMER', roleB:'LOAN OFFICER',
+    lines:[
+      {sp:'A', en:"Hi, I'm interested in applying for a small business loan.", ko:"안녕하세요, 소상공인 대출을 신청하고 싶어서요."},
+      {sp:'B', en:"Great, I can help with that. How much are you looking to borrow?", ko:"좋습니다, 제가 도와드릴게요. 얼마 정도 빌리고 싶으세요?"},
+      {sp:'A', en:"Around ten thousand dollars, to cover some new equipment.", ko:"새 장비를 마련하려고 하는데, 만 달러 정도요."},
+      {sp:'B', en:"Understood. What kind of documents will I need to bring in?", ko:"알겠습니다. 어떤 서류를 준비해야 할까요?", tip:"질문을 상대방 입장에서 다시 말할 때 “What kind of ~ will I need?”처럼 쓸 수 있어요."},
+      {sp:'A', en:"You'll need proof of income and your last two tax returns.", ko:"소득 증빙과 최근 2년치 세금 신고서가 필요해요."},
+      {sp:'B', en:"That's doable. How long does the approval process usually take?", ko:"그 정도는 준비할 수 있어요. 승인까지 보통 얼마나 걸리나요?"},
+      {sp:'A', en:"Typically about a week, once we have all the paperwork.", ko:"서류가 모두 준비되면 보통 일주일 정도 걸려요."},
+      {sp:'B', en:"That works for me. I'll bring everything in tomorrow.", ko:"괜찮네요. 내일 서류 다 가지고 올게요."}
+    ]
+  },
+  {
+    id:'schoolhelp', icon:'🎒', color:'#EFF6E7',
+    titleEn:'Asking a Senior for Help at School', titleKo:'학교에서 선배에게 도움 청하기',
+    roleA:'NEW STUDENT', roleB:'SENIOR STUDENT',
+    lines:[
+      {sp:'A', en:"Excuse me, sorry to bother you. Could you help me with something?", ko:"실례합니다, 번거롭게 해서 죄송한데, 좀 도와주실 수 있나요?"},
+      {sp:'B', en:"Sure, no problem. What's going on?", ko:"그럼요, 문제없어요. 무슨 일이에요?"},
+      {sp:'A', en:"I can't figure out how this locker combination works.", ko:"사물함 자물쇠 여는 방법을 모르겠어요.", tip:"“I can't figure out ~”는 “~을 도무지 모르겠다”는 뜻으로 자주 쓰이는 표현이에요."},
+      {sp:'B', en:"Oh, that's easy once you get the hang of it. Let me show you.", ko:"아, 그건 요령만 알면 쉬워요. 제가 보여드릴게요."},
+      {sp:'A', en:"Thanks so much. Also, do you know where room 204 is?", ko:"정말 감사해요. 그리고 혹시 204호가 어디 있는지 아세요?"},
+      {sp:'B', en:"Yeah, it's on the second floor, right past the library.", ko:"네, 2층에 있어요, 도서관 바로 지나서요."},
+      {sp:'A', en:"Perfect, that's really helpful. I really appreciate it.", ko:"완벽하네요, 정말 도움이 됐어요. 진심으로 감사드려요."},
+      {sp:'B', en:"No worries at all. Let me know if you need anything else.", ko:"별말씀을요. 또 필요한 거 있으면 말씀하세요."}
+    ]
+  },
+  {
+    id:'bloodtest', icon:'🩺', color:'#FCEAE6',
+    titleEn:'Asking for a Blood Test Report', titleKo:'병원에서 검사 결과 확인하기',
+    roleA:'PATIENT', roleB:'LAB STAFF',
+    lines:[
+      {sp:'A', en:"Hi, I'm here to pick up my blood test results.", ko:"안녕하세요, 혈액 검사 결과를 받으러 왔는데요."},
+      {sp:'B', en:"Sure, can I get your name and date of birth?", ko:"네, 성함과 생년월일 알려주시겠어요?"},
+      {sp:'A', en:"It's Jamie Park, born March 3rd, 1994.", ko:"제이미 박이고, 1994년 3월 3일생이에요."},
+      {sp:'B', en:"Thanks. Give me just a moment to pull that up.", ko:"감사합니다. 잠시만 확인해볼게요."},
+      {sp:'A', en:"Take your time. Is everything within the normal range?", ko:"천천히 하세요. 다 정상 범위에 있나요?", tip:"“within the normal range”는 “정상 범위 안에 있다”는 뜻의 의학 표현이에요."},
+      {sp:'B', en:"Mostly, yes. Your cholesterol is just slightly elevated.", ko:"대부분은 그렇습니다. 콜레스테롤 수치가 약간 높긴 해요."},
+      {sp:'A', en:"I see. Should I follow up with my doctor about that?", ko:"그렇군요. 그것 때문에 담당의랑 추가 상담을 받아야 할까요?"},
+      {sp:'B', en:"I'd recommend it, just to be safe.", ko:"안전하게 확인차 상담받아보시길 추천드려요."}
+    ]
+  },
+  {
+    id:'couple', icon:'💬', color:'#FBEAF0',
+    titleEn:'A Heartfelt Conversation', titleKo:'연인과의 진심 어린 대화',
+    roleA:'JAMIE', roleB:'ALEX',
+    lines:[
+      {sp:'A', en:"Hey, can we talk for a minute? I've been thinking about us.", ko:"저기, 잠깐 얘기할 수 있을까? 우리에 대해 생각을 좀 했어."},
+      {sp:'B', en:"Of course. Is everything okay?", ko:"물론이지. 무슨 일 있어?"},
+      {sp:'A', en:"Everything's fine, I just wanted to say I really appreciate you.", ko:"별일 아니야, 그냥 네가 정말 고맙다는 말을 하고 싶었어."},
+      {sp:'B', en:"That means a lot. I feel the same way about you.", ko:"그 말 정말 큰 의미가 있어. 나도 너에 대해 똑같이 느껴.", tip:"“That means a lot”은 “그 말이 정말 의미 있다”는 뜻으로, 감사나 감동을 표현할 때 자주 쓰여요."},
+      {sp:'A', en:"I know we've both been busy lately, but I miss spending time together.", ko:"요즘 둘 다 바빴지만, 같이 시간 보내는 게 그리워."},
+      {sp:'B', en:"I miss that too. Let's plan something just for us this weekend.", ko:"나도 그리워. 이번 주말엔 우리 둘만을 위한 시간을 계획해보자."},
+      {sp:'A', en:"I'd love that. Maybe a quiet walk, just the two of us.", ko:"좋아. 조용히 둘이서 산책하는 것도 좋을 것 같아."},
+      {sp:'B', en:"Perfect. I'm really glad we talked about this.", ko:"완벽해. 우리 이렇게 얘기 나눠서 정말 다행이야."}
+    ]
+  },
+  {
+    id:'motherson', icon:'🧺', color:'#FFF3DE',
+    titleEn:'Mom and Son: Talking About Responsibility', titleKo:'엄마와 아들의 대화 (책임감에 대해)',
+    roleA:'MOM', roleB:'SON',
+    lines:[
+      {sp:'A', en:"Honey, your room has been a mess for days. Can we talk about it?", ko:"얘야, 네 방이 며칠째 엉망이구나. 얘기 좀 할 수 있을까?"},
+      {sp:'B', en:"Sorry, Mom. I've just been really busy with school stuff.", ko:"죄송해요, 엄마. 그냥 학교 일 때문에 너무 바빴어요."},
+      {sp:'A', en:"I understand you're busy, but this is about being responsible.", ko:"바쁜 건 이해하지만, 이건 책임감의 문제야.", tip:"“this is about ~”는 “이건 ~에 관한 문제야”라는 뜻으로, 핵심을 짚어 말할 때 쓰는 표현이에요."},
+      {sp:'B', en:"You're right. I guess I've been putting it off.", ko:"맞아요. 계속 미루고 있었던 것 같아요."},
+      {sp:'A', en:"I'm not asking for perfect, just a little effort every day.", ko:"완벽하길 바라는 게 아니야, 그냥 매일 조금씩 노력해줬으면 해."},
+      {sp:'B', en:"That's fair. I'll clean it up today, I promise.", ko:"그건 맞는 말씀이에요. 오늘 치울게요, 약속해요."},
+      {sp:'A', en:"Thank you. It's not about the mess, it's about taking care of yourself.", ko:"고마워. 어질러진 게 문제가 아니라, 스스로를 챙기는 게 중요한 거야."},
+      {sp:'B', en:"I get it, Mom. I'll try to keep it up from now on.", ko:"알겠어요, 엄마. 앞으로 계속 신경 쓸게요."}
+    ]
+  }
+];
+
+/* ============ REAL VIDEOS ============
+   Real, publicly embeddable YouTube videos from the channel the user pointed
+   to: youtube.com/@easyenglish551 ("Easy English"). Embedded via YouTube's
+   official player — we never copy their dialogue/subtitle text, only our own
+   original notes about what to listen for. A couple of these videos are
+   co-tagged with a second channel in their title (noted honestly below). */
+const REAL_VIDEOS = [
+  {
+    id:'airport-real', videoId:'h02Mitw4Okg',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO',
+    titleEn:'English Conversation: Check-In Process at the Airport', titleKo:'공항 체크인 과정 (실제 영상)',
+    linkedTopic:'airport',
+    notes:[
+      "우리 앱의 '공항 체크인' 대화와 거의 같은 상황이에요. 여권 확인, 좌석 요청, 수하물 안내가 실제로 어떤 속도와 억양으로 오가는지 비교하며 들어보세요.",
+      "직원과 승객의 말투 차이(격식체 vs 편안한 구어체)를 느껴보는 것도 좋은 연습이 돼요.",
+      "먼저 자막 없이 들어본 뒤, 놓친 부분만 자막으로 확인해보세요."
+    ]
+  },
+  {
+    id:'hotel-real', videoId:'aOZmm_kQZ-o',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO',
+    titleEn:'English Conversation: Hotel Receptionist and Guest', titleKo:'호텔 체크인 대화 (실제 영상)',
+    linkedTopic:'hotel',
+    notes:[
+      "우리 앱의 '호텔 체크인' 대화와 같은 상황이에요. 이름 확인, 방 배정, 조식 시간 안내 흐름을 실제 속도로 확인해보세요.",
+      "직원이 손님을 응대할 때 쓰는 정중한 말투와 억양에 집중해서 들어보세요."
+    ]
+  },
+  {
+    id:'hotelphone-real', videoId:'H0BcC2UKYmA',
+    channel:'Easy English (@easyenglish551 · EnglishSpeakingTV 협업)', badge:'REAL VIDEO',
+    titleEn:'English Conversation: Booking a Hotel Room', titleKo:'호텔 방 예약 전화 (실제 영상)',
+    linkedTopic:'hotelphone',
+    notes:[
+      "우리 앱의 '전화로 호텔 방 예약하기'와 같은 상황이에요. 날짜, 방 종류, 요금을 묻고 답하는 흐름을 실제 대화로 확인해보세요.",
+      "전화 통화 특유의 억양과 속도, 되묻는 표현(“Sorry, could you repeat that?” 등)에도 주목해보세요."
+    ]
+  },
+  {
+    id:'bankloan-real', videoId:'k_4m0K-bGKI',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO',
+    titleEn:'English Conversation: Bank Loan Conversation', titleKo:'은행 대출 상담 (실제 영상)',
+    linkedTopic:'bankloan',
+    notes:[
+      "우리 앱의 '은행 대출 상담하기'와 같은 상황이에요. 대출 조건, 필요 서류, 절차를 묻고 답하는 실제 대화를 확인해보세요.",
+      "금융 관련 어휘(interest rate, approval, documents 등)가 실제로 어떻게 발음되는지 들어보세요."
+    ]
+  },
+  {
+    id:'schoolhelp-real', videoId:'BXWkT3zZqME',
+    channel:'Easy English (@easyenglish551 · zenenglish 협업)', badge:'REAL VIDEO',
+    titleEn:'New Student Seeks Locker Help from Old Student', titleKo:'신입생이 선배에게 도움 청하기 (실제 영상)',
+    linkedTopic:'schoolhelp',
+    notes:[
+      "우리 앱의 '학교에서 선배에게 도움 청하기'와 같은 상황이에요. 낯선 사람에게 도움을 요청하고, 친절하게 안내받는 자연스러운 흐름을 볼 수 있어요.",
+      "'Excuse me', 'Could you help me with ~?' 같은 정중한 요청 표현이 실제로 어떻게 쓰이는지 확인해보세요."
+    ]
+  },
+  {
+    id:'bloodtest-real', videoId:'sawkuj_tKUE',
+    channel:'Easy English (@easyenglish551 · LearnEnglishWithTVSeries 협업)', badge:'REAL VIDEO',
+    titleEn:'English Conversation: Asking for the Blood Test Report', titleKo:'병원에서 검사 결과 확인하기 (실제 영상)',
+    linkedTopic:'bloodtest',
+    notes:[
+      "우리 앱의 '병원에서 검사 결과 확인하기'와 같은 상황이에요. 검사 결과를 묻고, 수치에 대해 설명 듣는 흐름을 확인해보세요.",
+      "'cholesterol', 'blood cell' 같은 의학 관련 어휘가 실제로 어떻게 발음되는지 주의 깊게 들어보세요."
+    ]
+  },
+  {
+    id:'couple-real', videoId:'FLNT2VuPT3Q',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO',
+    titleEn:"Boyfriend & Girlfriend's Heartfelt Conversation", titleKo:'연인과의 진심 어린 대화 (실제 영상)',
+    linkedTopic:'couple',
+    notes:[
+      "우리 앱의 '연인과의 진심 어린 대화'와 같은 결의 상황이에요. 감정을 표현할 때 쓰는 부드러운 어조와 속도를 느껴보세요.",
+      "고마움이나 애정을 표현하는 문장이 실제로 어떤 억양으로 전달되는지 귀 기울여 들어보세요."
+    ]
+  },
+  {
+    id:'motherson-real', videoId:'82xoYcrjq1k',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO',
+    titleEn:'Mother-Son Conversation about Hygiene & Responsibility', titleKo:'엄마와 아들의 대화 (실제 영상)',
+    linkedTopic:'motherson',
+    notes:[
+      "우리 앱의 '엄마와 아들의 대화'와 같은 상황이에요. 감정이 다소 섞인 대화라 난이도가 있는 편이에요.",
+      "완벽히 다 이해하려 하지 말고, 전체 분위기와 핵심 단어 위주로 먼저 들어보세요. 억양 변화로 감정을 표현하는 방식을 눈여겨보세요."
+    ]
+  }
+];
+
+/* ============ PHRASE PATTERNS ============
+   Common expression patterns for everyday feelings/opinions, separate from
+   the situational dialogues above. Users can also register their own. */
+const PHRASE_CATEGORIES = [
+  {
+    id:'worry', icon:'😟', color:'#FCEAE6',
+    pattern:"I'm worried about ~ / I'm concerned that ~", titleKo:'걱정 · 우려 표현',
+    examples:[
+      {en:"I'm worried about my English pronunciation.", ko:"내 영어 발음이 걱정스러워."},
+      {en:"I'm a little concerned about the deadline.", ko:"마감일이 조금 우려돼."},
+      {en:"I'm worried that I might be late.", ko:"늦을까 봐 걱정돼."},
+      {en:"I'm concerned about how this will turn out.", ko:"이게 어떻게 될지 우려가 돼."}
+    ]
+  },
+  {
+    id:'regret', icon:'😔', color:'#F1E9F7',
+    pattern:"It's a shame that ~ / I wish ~", titleKo:'아쉬움 표현',
+    examples:[
+      {en:"It's a shame we couldn't meet up this time.", ko:"이번에 못 만난 게 아쉬워."},
+      {en:"I wish I had more time to prepare.", ko:"준비할 시간이 더 있었으면 좋았을 텐데, 아쉬워."},
+      {en:"It's too bad the weather ruined our plans.", ko:"날씨 때문에 계획이 틀어져서 아쉬워."}
+    ]
+  },
+  {
+    id:'curious', icon:'🤔', color:'#EAF0FB',
+    pattern:"I wonder ~ / I'm curious about ~", titleKo:'궁금함 표현',
+    examples:[
+      {en:"I wonder what she's up to these days.", ko:"그녀가 요즘 뭐 하고 지내는지 궁금해."},
+      {en:"I'm curious about how this app works.", ko:"이 앱이 어떻게 작동하는지 궁금해."},
+      {en:"I wonder if he got my message.", ko:"그가 내 메시지를 받았는지 궁금해."}
+    ]
+  },
+  {
+    id:'dilemma', icon:'😣', color:'#FDEFE0',
+    pattern:"I can't decide whether ~ / I'm torn between ~", titleKo:'고민 표현',
+    examples:[
+      {en:"I can't decide whether to take the job or not.", ko:"그 일을 받아들일지 말지 고민이야."},
+      {en:"I'm torn between the two options.", ko:"두 가지 선택지 사이에서 고민이야."},
+      {en:"I've been going back and forth on this decision.", ko:"이 결정에 대해 계속 고민 중이야."}
+    ]
+  },
+  {
+    id:'relief', icon:'😌', color:'#EFF6E7',
+    pattern:"I'm relieved that ~ / Thankfully ~", titleKo:'안심 · 다행 표현',
+    examples:[
+      {en:"I'm relieved that the test went well.", ko:"시험이 잘 끝나서 안심이야."},
+      {en:"Thankfully, the rain stopped before the event.", ko:"다행히 행사 전에 비가 그쳤어."},
+      {en:"I'm glad that everything worked out in the end.", ko:"결국 다 잘 풀려서 다행이야."}
+    ]
+  }
+];
+
+/* ============ STATE ============ */
+let progress = {};          // { topicId: [lineIndex, ...] }
+let currentTopic = null;
+let customPhrases = [];     // [{id, en, ko}]
+let customParagraphs = [];  // [{id, title, text, ko}]
+let recordings = {};        // { "topicId-lineIndex": {blobUrl, blob} }
+let mediaRecorder = null;
+let mediaChunks = [];
+let recordingKey = null;
+let mediaStream = null;
+let enVoice = null;
+
+/* ============ STORAGE ============
+   Uses window.storage (Claude artifact) when available; falls back to
+   localStorage automatically when running standalone (e.g. deployed to
+   Vercel/Netlify), so saved data works in both environments. */
+async function storageGet(key){
+  try{
+    if(window.storage && window.storage.get){
+      const r = await window.storage.get(key, false);
+      return r ? r.value : null;
+    }
+  }catch(e){ /* fall through to localStorage */ }
+  try{ return localStorage.getItem(key); }catch(e){ return null; }
+}
+async function storageSet(key, value){
+  try{
+    if(window.storage && window.storage.set){
+      await window.storage.set(key, value, false);
+      return;
+    }
+  }catch(e){ /* fall through to localStorage */ }
+  try{ localStorage.setItem(key, value); }catch(e){ /* storage unavailable */ }
+}
+
+async function loadProgress(){
+  try{
+    const v = await storageGet('practice-progress');
+    if(v){ progress = JSON.parse(v); }
+  }catch(e){ progress = {}; }
+}
+async function saveProgress(){
+  await storageSet('practice-progress', JSON.stringify(progress));
+}
+function markPracticed(topicId, idx){
+  if(!progress[topicId]) progress[topicId] = [];
+  if(!progress[topicId].includes(idx)) progress[topicId].push(idx);
+  saveProgress();
+}
+
+async function loadCustomPhrases(){
+  try{
+    const v = await storageGet('custom-phrases');
+    if(v){ customPhrases = JSON.parse(v); }
+  }catch(e){ customPhrases = []; }
+}
+async function saveCustomPhrases(){
+  await storageSet('custom-phrases', JSON.stringify(customPhrases));
+}
+
+async function loadCustomParagraphs(){
+  try{
+    const v = await storageGet('custom-paragraphs');
+    if(v){ customParagraphs = JSON.parse(v); }
+  }catch(e){ customParagraphs = []; }
+}
+async function saveCustomParagraphs(){
+  await storageSet('custom-paragraphs', JSON.stringify(customParagraphs));
+}
+
+/* ============ TTS ============ */
+function pickVoice(){
+  const voices = speechSynthesis.getVoices();
+  enVoice = voices.find(v => v.lang === 'en-US') || voices.find(v => v.lang && v.lang.startsWith('en')) || null;
+}
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = pickVoice;
+  pickVoice();
+}
+function speak(text, onend){
+  if(!('speechSynthesis' in window)){
+    showToast('이 브라우저는 음성 재생을 지원하지 않아요.');
+    if(onend) onend();
+    return;
+  }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.92;
+  if(enVoice) u.voice = enVoice;
+  if(onend) u.onend = onend;
+  speechSynthesis.speak(u);
+}
+
+/* ============ RECORDING ============ */
+async function toggleRecord(key, btnEl, waveEl, onDone){
+  if(recordingKey === key){
+    // stop
+    mediaRecorder.stop();
+    return;
+  }
+  if(recordingKey){ showToast('이미 다른 녹음이 진행 중이에요.'); return; }
+
+  try{
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      showMicHelp();
+      return;
+    }
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+  }catch(e){
+    showMicHelp();
+    return;
+  }
+
+  mediaChunks = [];
+  mediaRecorder = new MediaRecorder(mediaStream);
+  recordingKey = key;
+  btnEl.classList.add('recording');
+  btnEl.innerHTML = '⏹ 중지';
+  waveEl.querySelectorAll('.wave-bar').forEach(b => b.classList.add('animate'));
+
+  mediaRecorder.ondataavailable = e => { if(e.data.size > 0) mediaChunks.push(e.data); };
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(mediaChunks, { type:'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    recordings[key] = { blob, url };
+    btnEl.classList.remove('recording');
+    btnEl.innerHTML = '🎤 다시 녹음';
+    waveEl.querySelectorAll('.wave-bar').forEach(b => b.classList.remove('animate'));
+    mediaStream.getTracks().forEach(t => t.stop());
+    recordingKey = null;
+    if(onDone) onDone();
+  };
+  mediaRecorder.start();
+}
+
+function playRecording(key){
+  const rec = recordings[key];
+  if(!rec) return;
+  const audio = new Audio(rec.url);
+  audio.play();
+}
+
+function compareLine(key, text){
+  speak(text, () => {
+    setTimeout(() => {
+      if(recordings[key]) playRecording(key);
+    }, 350);
+  });
+}
+
+/* ============ TOAST ============ */
+let toastTimer = null;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ============ MIC HELP MODAL ============ */
+function showMicHelp(){
+  document.getElementById('micModalOverlay').classList.add('show');
+}
+function hideMicHelp(){
+  document.getElementById('micModalOverlay').classList.remove('show');
+}
+document.getElementById('micModalClose').onclick = hideMicHelp;
+document.getElementById('micModalOverlay').onclick = (e) => {
+  if(e.target.id === 'micModalOverlay') hideMicHelp();
+};
+
+/* ============ RENDER: HOME ============ */
+function renderHome(){
+  currentTopic = null;
+  const app = document.getElementById('app');
+  const totalPracticed = Object.values(progress).reduce((s,a)=>s+a.length,0);
+  const totalLines = TOPICS.reduce((s,t)=>s+t.lines.length,0);
+  const totalPatternExamples = PHRASE_CATEGORIES.reduce((s,c)=>s+c.examples.length,0);
+
+  app.innerHTML = `
+    <div class="topbar">
+      <div style="flex:1">
+        <div class="topbar-title">🎙 Talk Lab</div>
+        <div class="topbar-sub">일상 영어 회화 연습</div>
+      </div>
+      <div class="counter">${String(totalPracticed).padStart(3,'0')}/${String(totalLines).padStart(3,'0')}</div>
+    </div>
+    <div class="hero">
+      <div class="hero-eyebrow">CHOOSE YOUR MODE</div>
+      <div class="hero-title">오늘은 어떻게<br/>연습할까요?</div>
+      <div class="hero-desc">상황을 통째로 연습하거나, 자주 쓰는 표현만 콕 집어 연습해보세요.</div>
+    </div>
+    <div class="mode-grid">
+      <div class="mode-card" id="situationModeCard">
+        <div class="mode-icon" style="background:var(--teal-soft)">🗣</div>
+        <div class="mode-info">
+          <div class="mode-title">상황 연습</div>
+          <div class="mode-sub">공항, 호텔, 은행 등 상황별 대화를 통째로 듣고 따라 말해보세요.</div>
+          <div class="mode-count">${TOPICS.length}개 상황 · ${totalLines}개 문장</div>
+        </div>
+        <div class="mode-chev">›</div>
+      </div>
+      <div class="mode-card" id="phraseModeCard" style="border-color:#EFD9A8;">
+        <div class="mode-icon" style="background:var(--gold-soft)">💬</div>
+        <div class="mode-info">
+          <div class="mode-title">표현 연습</div>
+          <div class="mode-sub">걱정, 아쉬움, 궁금함 같은 감정 표현 패턴을 익히고, 내 문장도 등록해보세요.</div>
+          <div class="mode-count">${PHRASE_CATEGORIES.length}개 패턴 · ${totalPatternExamples}개 예문${customPhrases.length ? ` · 내 표현 ${customPhrases.length}개` : ''}</div>
+        </div>
+        <div class="mode-chev">›</div>
+      </div>
+      <div class="mode-card" id="paragraphModeCard" style="border-color:#c6e3dc;">
+        <div class="mode-icon" style="background:var(--teal-soft)">📄</div>
+        <div class="mode-info">
+          <div class="mode-title">문단 연습</div>
+          <div class="mode-sub">긴 문장이나 문단을 직접 등록하고, 통째로 듣고 녹음해서 비교해보세요.</div>
+          <div class="mode-count">${customParagraphs.length}개 등록됨</div>
+        </div>
+        <div class="mode-chev">›</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('situationModeCard').onclick = renderTopicList;
+  document.getElementById('phraseModeCard').onclick = renderPhraseHome;
+  document.getElementById('paragraphModeCard').onclick = renderParagraphHome;
+}
+
+/* ============ RENDER: TOPIC LIST (situational practice) ============ */
+function renderTopicList(){
+  currentTopic = null;
+  const app = document.getElementById('app');
+
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="topicListBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">🗣 상황 연습</div>
+        <div class="topbar-sub">상황을 골라 대화를 연습해보세요</div>
+      </div>
+    </div>
+    <div class="topic-list" id="topicList"></div>
+    <div class="section-head">
+      <div class="section-title">🎬 실전 영상으로 확인하기</div>
+      <div class="section-sub">실제 원어민 영상</div>
+    </div>
+    <div class="video-scroll" id="videoScroll"></div>
+  `;
+  document.getElementById('topicListBackBtn').onclick = renderHome;
+
+  const list = document.getElementById('topicList');
+  TOPICS.forEach(t => {
+    const done = (progress[t.id] || []).length;
+    const total = t.lines.length;
+    const pct = Math.round((done/total)*100);
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = `
+      <div class="topic-icon" style="background:${t.color}">${t.icon}</div>
+      <div class="topic-info">
+        <div class="topic-title-en">${t.titleEn}</div>
+        <div class="topic-title-ko">${t.titleKo}</div>
+        <div class="topic-progress">
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div class="progress-num">${done}/${total}</div>
+        </div>
+      </div>
+      <div class="chev">›</div>
+    `;
+    card.onclick = () => renderDialogue(t.id);
+    list.appendChild(card);
+  });
+
+  const vScroll = document.getElementById('videoScroll');
+  REAL_VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.innerHTML = `
+      <div class="video-thumb" style="background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg')">
+        <div class="video-badge">${v.badge}</div>
+        <div class="video-play"><span>▶</span></div>
+      </div>
+      <div class="video-body">
+        <div class="video-title">${v.titleKo}</div>
+        <div class="video-channel">${v.channel}</div>
+      </div>
+    `;
+    card.onclick = () => renderVideoDetail(v.id);
+    vScroll.appendChild(card);
+  });
+}
+
+/* ============ RENDER: VIDEO DETAIL ============ */
+function renderVideoDetail(videoRealId){
+  const v = REAL_VIDEOS.find(x => x.id === videoRealId);
+  const app = document.getElementById('app');
+  const backTarget = currentTopic ? (() => renderDialogue(currentTopic)) : renderTopicList;
+
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="videoBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">🎬 실전 영상</div>
+        <div class="topbar-sub">${v.titleKo}</div>
+      </div>
+    </div>
+    <div class="video-detail-scroll">
+      <div class="video-frame-wrap">
+        <iframe src="https://www.youtube.com/embed/${v.videoId}" title="${v.titleEn}"
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="video-meta">
+        <div class="video-meta-channel">${v.channel}</div>
+        <div class="video-meta-title">${v.titleEn}</div>
+      </div>
+      <div class="note-card">
+        <h4>👀 이렇게 들어보세요</h4>
+        ${v.notes.map(n => `<p>${n}</p>`).join('')}
+      </div>
+      <button class="yt-open-btn" id="ytOpenBtn">▶ YouTube 앱에서 열기</button>
+      <div class="video-disclaimer">이 영상은 ${v.channel} 채널의 저작물이며, YouTube 공식 플레이어로 표시됩니다. 위 설명과 학습 포인트는 저희가 직접 작성한 내용이에요.</div>
+    </div>
+  `;
+  document.getElementById('videoBackBtn').onclick = backTarget;
+  document.getElementById('ytOpenBtn').onclick = () => window.open(`https://www.youtube.com/watch?v=${v.videoId}`, '_blank');
+}
+
+/* ============ RENDER: DIALOGUE ============ */
+function renderDialogue(topicId){
+  currentTopic = topicId;
+  const topic = TOPICS.find(t => t.id === topicId);
+  const app = document.getElementById('app');
+
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="backBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">${topic.icon} ${topic.titleEn}</div>
+        <div class="topbar-sub">${topic.titleKo}</div>
+      </div>
+      <div class="counter" id="dlgCounter"></div>
+    </div>
+    <div class="dialogue-wrap">
+      <div class="dialogue-scroll" id="dlgScroll"></div>
+      <div class="mic-note">🔊 듣기로 원어민 발음을 먼저 확인하고, 🎤 녹음 후 🔁 비교하기로 내 발음과 비교해보세요.${
+        REAL_VIDEOS.some(v => v.linkedTopic === topicId)
+          ? `<br/><span id="jumpToVideo" style="display:inline-block;margin-top:8px;color:var(--teal);font-weight:700;cursor:pointer;">🎬 이 상황의 실전 영상 보러가기 ›</span>`
+          : ''
+      }</div>
+    </div>
+  `;
+  document.getElementById('backBtn').onclick = renderTopicList;
+  const jumpEl = document.getElementById('jumpToVideo');
+  if(jumpEl){
+    const match = REAL_VIDEOS.find(v => v.linkedTopic === topicId);
+    jumpEl.onclick = () => renderVideoDetail(match.id);
+  }
+  renderDialogueBody(topic);
+}
+
+function renderDialogueBody(topic){
+  const scroll = document.getElementById('dlgScroll');
+  scroll.innerHTML = '';
+  const done = (progress[topic.id] || []).length;
+  document.getElementById('dlgCounter').textContent = `${String(done).padStart(2,'0')}/${String(topic.lines.length).padStart(2,'0')}`;
+
+  topic.lines.forEach((line, idx) => {
+    const side = line.sp === 'A' ? 'left' : 'right';
+    const role = line.sp === 'A' ? topic.roleA : topic.roleB;
+    const key = `${topic.id}-${idx}`;
+    const practiced = (progress[topic.id] || []).includes(idx);
+
+    const row = document.createElement('div');
+    row.className = `line-row ${side}`;
+    row.innerHTML = `
+      <div class="speaker-label">${role}</div>
+      <div class="bubble-wrap">
+        <div class="bubble">
+          <div class="en-text">${line.en}</div>
+          <div class="ko-text">${line.ko}</div>
+          ${line.tip ? `<div class="tip-box"><span class="icon">💡</span><span>${line.tip}</span></div>` : ''}
+          <div class="line-actions" id="actions-${key}"></div>
+        </div>
+        ${practiced ? '<div class="done-check">✓</div>' : ''}
+      </div>
+    `;
+    scroll.appendChild(row);
+    renderLineActions(key, topic.id, idx, line);
+  });
+}
+
+function renderLineActions(key, topicId, idx, line){
+  const wrap = document.getElementById(`actions-${key}`);
+  const hasRec = !!recordings[key];
+  wrap.innerHTML = `
+    <button class="act-btn act-listen" data-action="listen">🔊 듣기</button>
+    <button class="act-btn act-record" data-action="record">🎤 녹음</button>
+    <div class="wave" id="wave-${key}">
+      <div class="wave-bar" style="height:4px"></div>
+      <div class="wave-bar" style="height:8px"></div>
+      <div class="wave-bar" style="height:5px"></div>
+      <div class="wave-bar" style="height:10px"></div>
+    </div>
+    <button class="act-btn act-play" data-action="play" ${hasRec ? '' : 'disabled'}>▶ 내 목소리</button>
+    <button class="act-btn act-compare" data-action="compare" ${hasRec ? '' : 'disabled'}>🔁 비교하기</button>
+  `;
+  const listenBtn = wrap.querySelector('[data-action="listen"]');
+  const recordBtn = wrap.querySelector('[data-action="record"]');
+  const playBtn = wrap.querySelector('[data-action="play"]');
+  const compareBtn = wrap.querySelector('[data-action="compare"]');
+  const waveEl = document.getElementById(`wave-${key}`);
+
+  listenBtn.onclick = () => speak(line.en);
+  recordBtn.onclick = async () => {
+    await toggleRecord(key, recordBtn, waveEl, () => {
+      markPracticed(topicId, idx);
+      const topic = TOPICS.find(t => t.id === topicId);
+      const doneCount = (progress[topicId] || []).length;
+      document.getElementById('dlgCounter').textContent = `${String(doneCount).padStart(2,'0')}/${String(topic.lines.length).padStart(2,'0')}`;
+      renderDialogueLineButtons(key);
+    });
+  };
+  playBtn.onclick = () => playRecording(key);
+  compareBtn.onclick = () => compareLine(key, line.en);
+}
+
+function renderDialogueLineButtons(key){
+  const [topicId, idxStr] = key.split(/-(?=[0-9]+$)/);
+  const idx = parseInt(idxStr, 10);
+  const topic = TOPICS.find(t => t.id === topicId);
+  const line = topic.lines[idx];
+  renderLineActions(key, topicId, idx, line);
+  // add done check mark
+  const row = document.getElementById(`actions-${key}`).closest('.bubble-wrap');
+  if(row && !row.querySelector('.done-check')){
+    const chk = document.createElement('div');
+    chk.className = 'done-check';
+    chk.textContent = '✓';
+    row.appendChild(chk);
+  }
+}
+
+/* ============ RENDER: PHRASE ACTIONS (shared listen/record/compare row) ============ */
+function renderPhraseActions(key, text){
+  const wrap = document.getElementById(`actions-${key}`);
+  if(!wrap) return;
+  const hasRec = !!recordings[key];
+  wrap.innerHTML = `
+    <button class="act-btn act-listen" data-action="listen">🔊 듣기</button>
+    <button class="act-btn act-record" data-action="record">🎤 녹음</button>
+    <div class="wave" id="wave-${key}">
+      <div class="wave-bar" style="height:4px"></div>
+      <div class="wave-bar" style="height:8px"></div>
+      <div class="wave-bar" style="height:5px"></div>
+      <div class="wave-bar" style="height:10px"></div>
+    </div>
+    <button class="act-btn act-play" data-action="play" ${hasRec ? '' : 'disabled'}>▶ 내 목소리</button>
+    <button class="act-btn act-compare" data-action="compare" ${hasRec ? '' : 'disabled'}>🔁 비교하기</button>
+  `;
+  const listenBtn = wrap.querySelector('[data-action="listen"]');
+  const recordBtn = wrap.querySelector('[data-action="record"]');
+  const playBtn = wrap.querySelector('[data-action="play"]');
+  const compareBtn = wrap.querySelector('[data-action="compare"]');
+  const waveEl = document.getElementById(`wave-${key}`);
+
+  listenBtn.onclick = () => speak(text);
+  recordBtn.onclick = async () => {
+    await toggleRecord(key, recordBtn, waveEl, () => renderPhraseActions(key, text));
+  };
+  playBtn.onclick = () => playRecording(key);
+  compareBtn.onclick = () => compareLine(key, text);
+}
+
+/* ============ RENDER: PHRASE HOME ============ */
+function renderPhraseHome(){
+  currentTopic = null;
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="phraseBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">💬 표현 연습</div>
+        <div class="topbar-sub">자주 쓰는 문구를 등록하고 연습해보세요</div>
+      </div>
+    </div>
+    <button class="add-phrase-btn" id="addPhraseBtn">➕ 내 표현 등록하기</button>
+    ${customPhrases.length ? `
+      <div class="section-head">
+        <div class="section-title">📌 내가 등록한 표현</div>
+        <div class="section-sub">${customPhrases.length}개</div>
+      </div>
+      <div class="phrase-list" id="customPhraseList"></div>
+    ` : `<div class="empty-hint">아직 등록한 표현이 없어요. 위 버튼으로 자주 쓰고 싶은 문장을 추가해보세요.</div>`}
+    <div class="section-head">
+      <div class="section-title">🗂 자주 쓰는 표현 패턴</div>
+      <div class="section-sub">${PHRASE_CATEGORIES.length}개</div>
+    </div>
+    <div class="topic-list" id="patternList"></div>
+  `;
+  document.getElementById('phraseBackBtn').onclick = renderHome;
+  document.getElementById('addPhraseBtn').onclick = renderAddPhraseForm;
+
+  if(customPhrases.length){
+    const list = document.getElementById('customPhraseList');
+    customPhrases.forEach(p => {
+      const key = `custom-${p.id}`;
+      const card = document.createElement('div');
+      card.className = 'phrase-card';
+      card.innerHTML = `
+        <button class="phrase-del-btn" data-del="${p.id}">🗑</button>
+        <div class="en-text">${p.en}</div>
+        ${p.ko ? `<div class="ko-text">${p.ko}</div>` : ''}
+        <div class="line-actions" id="actions-${key}"></div>
+      `;
+      list.appendChild(card);
+      renderPhraseActions(key, p.en);
+      card.querySelector('[data-del]').onclick = () => deleteCustomPhrase(p.id);
+    });
+  }
+
+  const patternList = document.getElementById('patternList');
+  PHRASE_CATEGORIES.forEach(cat => {
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = `
+      <div class="topic-icon" style="background:${cat.color}">${cat.icon}</div>
+      <div class="topic-info">
+        <div class="topic-title-en">${cat.pattern}</div>
+        <div class="topic-title-ko">${cat.titleKo}</div>
+      </div>
+      <div class="chev">›</div>
+    `;
+    card.onclick = () => renderPhraseCategory(cat.id);
+    patternList.appendChild(card);
+  });
+}
+
+/* ============ RENDER: PHRASE CATEGORY ============ */
+function renderPhraseCategory(categoryId){
+  const cat = PHRASE_CATEGORIES.find(c => c.id === categoryId);
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="catBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">${cat.icon} ${cat.pattern}</div>
+        <div class="topbar-sub">${cat.titleKo}</div>
+      </div>
+    </div>
+    <div class="phrase-list" id="exampleList" style="padding-top:14px;"></div>
+  `;
+  document.getElementById('catBackBtn').onclick = renderPhraseHome;
+  const list = document.getElementById('exampleList');
+  cat.examples.forEach((ex, idx) => {
+    const key = `cat-${cat.id}-${idx}`;
+    const card = document.createElement('div');
+    card.className = 'phrase-card';
+    card.innerHTML = `
+      <div class="en-text">${ex.en}</div>
+      <div class="ko-text">${ex.ko}</div>
+      <div class="line-actions" id="actions-${key}"></div>
+    `;
+    list.appendChild(card);
+    renderPhraseActions(key, ex.en);
+  });
+}
+
+/* ============ RENDER: ADD PHRASE FORM ============ */
+function renderAddPhraseForm(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="addBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">➕ 표현 등록하기</div>
+        <div class="topbar-sub">자주 쓰고 싶은 문장을 저장해두세요</div>
+      </div>
+    </div>
+    <div style="padding-top:18px;">
+      <div class="form-group">
+        <label class="form-label">영어 문장 *</label>
+        <textarea class="form-input form-textarea" id="enInput" placeholder="예: I'm worried about my presentation tomorrow."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">한국어 뜻 / 설명 (선택)</label>
+        <input class="form-input" id="koInput" placeholder="예: 내일 발표가 걱정스러워." />
+      </div>
+      <button class="form-save-btn" id="savePhraseBtn">저장하기</button>
+    </div>
+  `;
+  document.getElementById('addBackBtn').onclick = renderPhraseHome;
+  document.getElementById('savePhraseBtn').onclick = async () => {
+    const en = document.getElementById('enInput').value.trim();
+    const ko = document.getElementById('koInput').value.trim();
+    if(!en){ showToast('영어 문장을 입력해주세요.'); return; }
+    customPhrases.push({ id: Date.now().toString(), en, ko });
+    await saveCustomPhrases();
+    renderPhraseHome();
+  };
+}
+
+function deleteCustomPhrase(id){
+  if(!confirm('이 표현을 삭제할까요?')) return;
+  customPhrases = customPhrases.filter(p => p.id !== id);
+  saveCustomPhrases();
+  renderPhraseHome();
+}
+
+/* ============ RENDER: PARAGRAPH HOME ============ */
+function renderParagraphHome(){
+  currentTopic = null;
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="paraBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">📄 문단 연습</div>
+        <div class="topbar-sub">문장이나 문단을 등록하고 통째로 연습해보세요</div>
+      </div>
+    </div>
+    <button class="add-phrase-btn" id="addParaBtn">➕ 문장/문단 등록하기</button>
+    ${customParagraphs.length ? `
+      <div class="section-head">
+        <div class="section-title">📚 등록한 문장 · 문단</div>
+        <div class="section-sub">${customParagraphs.length}개</div>
+      </div>
+      <div class="phrase-list" id="paraList"></div>
+    ` : `<div class="empty-hint">아직 등록한 문장/문단이 없어요. 위 버튼으로 연습하고 싶은 내용을 추가해보세요.</div>`}
+  `;
+  document.getElementById('paraBackBtn').onclick = renderHome;
+  document.getElementById('addParaBtn').onclick = renderAddParagraphForm;
+
+  if(customParagraphs.length){
+    const list = document.getElementById('paraList');
+    customParagraphs.forEach(p => {
+      const words = p.text.trim().split(/\s+/).filter(Boolean).length;
+      const preview = p.text.length > 100 ? p.text.slice(0,100) + '…' : p.text;
+      const card = document.createElement('div');
+      card.className = 'phrase-card';
+      card.style.cursor = 'pointer';
+      card.innerHTML = `
+        <button class="phrase-del-btn" data-del="${p.id}">🗑</button>
+        ${p.title ? `<div class="para-title">${p.title}</div>` : ''}
+        <div class="en-text para-preview">${preview}</div>
+        <div class="para-meta">${words}단어</div>
+      `;
+      card.addEventListener('click', (e) => {
+        if(e.target.closest('[data-del]')) return;
+        renderParagraphDetail(p.id);
+      });
+      card.querySelector('[data-del]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteCustomParagraph(p.id);
+      });
+      list.appendChild(card);
+    });
+  }
+}
+
+/* ============ RENDER: ADD PARAGRAPH FORM ============ */
+function renderAddParagraphForm(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="addParaBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">➕ 문장/문단 등록하기</div>
+        <div class="topbar-sub">연습하고 싶은 내용을 통째로 붙여넣으세요</div>
+      </div>
+    </div>
+    <div style="padding-top:18px;">
+      <div class="form-group">
+        <label class="form-label">제목 (선택)</label>
+        <input class="form-input" id="paraTitleInput" placeholder="예: 자기소개 스크립트" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">영어 문장 / 문단 *</label>
+        <textarea class="form-input form-textarea para-textarea" id="paraEnInput" placeholder="연습하고 싶은 문장이나 문단을 통째로 붙여넣으세요."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">한국어 뜻 / 메모 (선택)</label>
+        <textarea class="form-input form-textarea" id="paraKoInput" placeholder="뜻이나 참고 메모를 적어두세요."></textarea>
+      </div>
+      <button class="form-save-btn" id="saveParaBtn">저장하기</button>
+    </div>
+  `;
+  document.getElementById('addParaBackBtn').onclick = renderParagraphHome;
+  document.getElementById('saveParaBtn').onclick = async () => {
+    const title = document.getElementById('paraTitleInput').value.trim();
+    const text = document.getElementById('paraEnInput').value.trim();
+    const ko = document.getElementById('paraKoInput').value.trim();
+    if(!text){ showToast('문장이나 문단을 입력해주세요.'); return; }
+    customParagraphs.push({ id: Date.now().toString(), title, text, ko });
+    await saveCustomParagraphs();
+    renderParagraphHome();
+  };
+}
+
+/* ============ RENDER: PARAGRAPH DETAIL ============ */
+function renderParagraphDetail(id){
+  const p = customParagraphs.find(x => x.id === id);
+  if(!p) { renderParagraphHome(); return; }
+  const app = document.getElementById('app');
+  const key = `para-${p.id}`;
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="paraDetailBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">📄 ${p.title || '문단 연습'}</div>
+        <div class="topbar-sub">${p.text.trim().split(/\s+/).filter(Boolean).length}단어</div>
+      </div>
+      <button class="back-btn" id="paraDetailDelBtn" title="삭제">🗑</button>
+    </div>
+    <div class="phrase-list" style="padding-top:14px;">
+      <div class="phrase-card">
+        <div class="en-text" style="white-space:pre-wrap; line-height:1.6;">${p.text}</div>
+        ${p.ko ? `<div class="ko-text" style="white-space:pre-wrap; margin-top:8px;">${p.ko}</div>` : ''}
+        <div class="line-actions" id="actions-${key}"></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('paraDetailBackBtn').onclick = renderParagraphHome;
+  document.getElementById('paraDetailDelBtn').onclick = () => deleteCustomParagraph(p.id);
+  renderPhraseActions(key, p.text);
+}
+
+function deleteCustomParagraph(id){
+  if(!confirm('이 항목을 삭제할까요?')) return;
+  customParagraphs = customParagraphs.filter(p => p.id !== id);
+  saveCustomParagraphs();
+  renderParagraphHome();
+}
+
+/* ============ INIT ============ */
+(async function init(){
+  await loadProgress();
+  await loadCustomPhrases();
+  await loadCustomParagraphs();
+  renderHome();
+})();
+</script>
+</body>
+</html>
