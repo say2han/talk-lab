@@ -185,6 +185,13 @@
     padding: 6px 24px calc(14px + var(--safe-b));
     border-top:1px solid var(--line); background:var(--bg);
   }
+  .video-banner{
+    margin:10px 14px 0; padding:11px 14px; background:var(--teal-soft);
+    border:1px solid #c6e3dc; border-radius:12px; display:flex; align-items:center;
+    gap:8px; cursor:pointer; font-size:13px; font-weight:700; color:var(--teal);
+  }
+  .video-banner-text{ flex:1; }
+  .video-banner-chev{ font-size:16px; }
 
   /* ---------- Toast ---------- */
   .toast{
@@ -935,9 +942,10 @@ function renderVideoDetail(videoRealId){
       </div>
     </div>
     <div class="video-detail-scroll">
-      <div class="video-frame-wrap">
-        <iframe src="https://www.youtube.com/embed/${v.videoId}" title="${v.titleEn}"
-          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <div class="video-frame-wrap" id="videoThumbClick" style="cursor:pointer; background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg'); background-size:cover; background-position:center; position:relative;">
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.22);">
+          <span style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;font-size:22px;padding-left:4px;">▶</span>
+        </div>
       </div>
       <div class="video-meta">
         <div class="video-meta-channel">${v.channel}</div>
@@ -947,12 +955,14 @@ function renderVideoDetail(videoRealId){
         <h4>👀 이렇게 들어보세요</h4>
         ${v.notes.map(n => `<p>${n}</p>`).join('')}
       </div>
-      <button class="yt-open-btn" id="ytOpenBtn">▶ YouTube 앱에서 열기</button>
-      <div class="video-disclaimer">이 영상은 ${v.channel} 채널의 저작물이며, YouTube 공식 플레이어로 표시됩니다. 위 설명과 학습 포인트는 저희가 직접 작성한 내용이에요.</div>
+      <button class="yt-open-btn" id="ytOpenBtn">▶ YouTube에서 보기</button>
+      <div class="video-disclaimer">이 영상은 ${v.channel} 채널의 저작물이며, 위 버튼을 누르면 YouTube에서 재생됩니다. 설명과 학습 포인트는 저희가 직접 작성한 내용이에요.</div>
     </div>
   `;
   document.getElementById('videoBackBtn').onclick = backTarget;
-  document.getElementById('ytOpenBtn').onclick = () => window.open(`https://www.youtube.com/watch?v=${v.videoId}`, '_blank');
+  const openYt = () => window.open(`https://www.youtube.com/watch?v=${v.videoId}`, '_blank');
+  document.getElementById('ytOpenBtn').onclick = openYt;
+  document.getElementById('videoThumbClick').onclick = openYt;
 }
 
 /* ============ RENDER: DIALOGUE ============ */
@@ -960,6 +970,7 @@ function renderDialogue(topicId){
   currentTopic = topicId;
   const topic = TOPICS.find(t => t.id === topicId);
   const app = document.getElementById('app');
+  const linkedVideo = REAL_VIDEOS.find(v => v.linkedTopic === topicId);
 
   app.innerHTML = `
     <div class="topbar">
@@ -970,20 +981,22 @@ function renderDialogue(topicId){
       </div>
       <div class="counter" id="dlgCounter"></div>
     </div>
+    ${linkedVideo ? `
+      <div class="video-banner" id="jumpToVideo">
+        <span>🎬</span>
+        <span class="video-banner-text">이 상황의 실전 영상 보러가기</span>
+        <span class="video-banner-chev">›</span>
+      </div>
+    ` : ''}
     <div class="dialogue-wrap">
       <div class="dialogue-scroll" id="dlgScroll"></div>
-      <div class="mic-note">🔊 듣기로 원어민 발음을 먼저 확인하고, 🎤 녹음 후 🔁 비교하기로 내 발음과 비교해보세요.${
-        REAL_VIDEOS.some(v => v.linkedTopic === topicId)
-          ? `<br/><span id="jumpToVideo" style="display:inline-block;margin-top:8px;color:var(--teal);font-weight:700;cursor:pointer;">🎬 이 상황의 실전 영상 보러가기 ›</span>`
-          : ''
-      }</div>
+      <div class="mic-note">🔊 듣기로 원어민 발음을 먼저 확인하고, 🎤 녹음 후 🔁 비교하기로 내 발음과 비교해보세요.</div>
     </div>
   `;
   document.getElementById('backBtn').onclick = renderTopicList;
   const jumpEl = document.getElementById('jumpToVideo');
-  if(jumpEl){
-    const match = REAL_VIDEOS.find(v => v.linkedTopic === topicId);
-    jumpEl.onclick = () => renderVideoDetail(match.id);
+  if(jumpEl && linkedVideo){
+    jumpEl.onclick = () => renderVideoDetail(linkedVideo.id);
   }
   renderDialogueBody(topic);
 }
