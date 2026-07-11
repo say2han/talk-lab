@@ -68,7 +68,7 @@
   /* ---------- Home / topic list ---------- */
   .hero{ padding: 22px 20px 6px; }
   .hero-eyebrow{
-    font-family:'Space Mono', monospace; font-size:11.5px; letter-spacing:2px;
+    font-family:'Space Mono', monospace; font-size:13px; letter-spacing:2px;
     text-transform:uppercase; color:var(--coral-deep); font-weight:700;
   }
   .hero-title{
@@ -90,35 +90,35 @@
   }
   .topic-info{ flex:1; min-width:0; }
   .topic-title-en{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:13.5px; }
-  .topic-title-ko{ font-size:11px; color:var(--ink-soft); margin-top:1px; }
+  .topic-title-ko{ font-size:12.5px; color:var(--ink-soft); margin-top:1px; }
   .topic-progress{
     display:flex; align-items:center; gap:5px; margin-top:5px;
   }
   .progress-track{ flex:1; height:4px; background:var(--line); border-radius:3px; overflow:hidden; }
   .progress-fill{ height:100%; background:var(--teal); border-radius:3px; transition:width .3s ease; }
-  .progress-num{ font-family:'Space Mono', monospace; font-size:9.5px; color:var(--ink-soft); flex-shrink:0; }
+  .progress-num{ font-family:'Space Mono', monospace; font-size:11px; color:var(--ink-soft); flex-shrink:0; }
   .chev{ color:var(--ink-soft); font-size:15px; flex-shrink:0; }
 
   /* ---------- Big mode-selector cards (home landing) ---------- */
-  .mode-grid{ display:flex; flex-direction:column; gap:14px; padding: 6px 20px 20px; }
+  .mode-grid{ display:flex; flex-direction:column; gap:11px; padding: 4px 20px 18px; }
   .mode-card{
-    background:var(--paper); border-radius:22px; padding:22px 20px;
+    background:var(--paper); border-radius:18px; padding:14px 16px;
     box-shadow:var(--shadow); border:1px solid var(--line); cursor:pointer;
-    display:flex; align-items:center; gap:16px; transition:transform .12s ease;
+    display:flex; align-items:center; gap:13px; transition:transform .12s ease;
   }
   .mode-card:active{ transform:scale(0.98); }
   .mode-icon{
-    width:60px; height:60px; border-radius:18px; flex-shrink:0; font-size:30px;
+    width:46px; height:46px; border-radius:14px; flex-shrink:0; font-size:22px;
     display:flex; align-items:center; justify-content:center;
   }
   .mode-info{ flex:1; min-width:0; }
-  .mode-title{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:19px; }
-  .mode-sub{ font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.5; }
+  .mode-title{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:16.5px; }
+  .mode-sub{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; line-height:1.4; }
   .mode-count{
-    font-family:'Space Mono', monospace; font-size:10.5px; color:var(--ink-soft);
-    margin-top:8px; background:var(--bg); display:inline-block; padding:3px 8px; border-radius:20px;
+    font-family:'Space Mono', monospace; font-size:11px; color:var(--ink-soft);
+    margin-top:6px; background:var(--bg); display:inline-block; padding:2px 7px; border-radius:20px;
   }
-  .mode-chev{ color:var(--ink-soft); font-size:20px; flex-shrink:0; }
+  .mode-chev{ color:var(--ink-soft); font-size:18px; flex-shrink:0; }
 
 
   /* ---------- Dialogue screen ---------- */
@@ -130,7 +130,7 @@
   .line-row.right{ align-self:flex-end; align-items:flex-end; }
 
   .speaker-label{
-    font-family:'Space Mono', monospace; font-size:10.5px; font-weight:700;
+    font-family:'Space Mono', monospace; font-size:12px; font-weight:700;
     color:var(--ink-soft); margin: 0 6px 4px; letter-spacing:.5px;
   }
 
@@ -175,13 +175,13 @@
   .done-check{
     position:absolute; top:-6px; right:-6px; width:18px; height:18px;
     background:var(--teal); border-radius:50%; display:flex; align-items:center;
-    justify-content:center; font-size:10px; color:#fff; border:2px solid var(--bg);
+    justify-content:center; font-size:11.5px; color:#fff; border:2px solid var(--bg);
   }
   .bubble-wrap{ position:relative; }
 
   /* ---------- Footer note on dialogue screen ---------- */
   .mic-note{
-    text-align:center; font-size:11.5px; color:var(--ink-soft);
+    text-align:center; font-size:13px; color:var(--ink-soft);
     padding: 6px 24px calc(14px + var(--safe-b));
     border-top:1px solid var(--line); background:var(--bg);
   }
@@ -212,7 +212,7 @@
     padding: 4px 20px 2px; margin-top:6px;
   }
   .section-title{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:17px; }
-  .section-sub{ font-size:11.5px; color:var(--ink-soft); }
+  .section-sub{ font-size:13px; color:var(--ink-soft); }
   .video-scroll{
     display:flex; gap:12px; overflow-x:auto; padding: 10px 20px 18px;
     scroll-snap-type: x mandatory;
@@ -238,11 +238,11 @@
   }
   .video-badge{
     position:absolute; left:8px; top:8px; background:rgba(23,35,31,0.75); color:#fff;
-    font-size:9.5px; font-weight:600; padding:3px 7px; border-radius:20px; letter-spacing:.3px;
+    font-size:11px; font-weight:600; padding:3px 7px; border-radius:20px; letter-spacing:.3px;
   }
   .video-body{ padding:10px 12px 12px; }
   .video-title{ font-size:12.5px; font-weight:700; line-height:1.35; }
-  .video-channel{ font-size:10.5px; color:var(--ink-soft); margin-top:3px; }
+  .video-channel{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
 
   /* ---------- Video detail screen ---------- */
   .video-detail-scroll{ flex:1; overflow-y:auto; padding-bottom: calc(20px + var(--safe-b)); }
@@ -250,7 +250,7 @@
   .video-frame-wrap iframe{ width:100%; height:100%; border:0; display:block; }
   .video-meta{ padding:16px 18px 4px; }
   .video-meta-channel{
-    font-family:'Space Mono', monospace; font-size:11px; letter-spacing:1px;
+    font-family:'Space Mono', monospace; font-size:12.5px; letter-spacing:1px;
     text-transform:uppercase; color:var(--coral-deep); font-weight:700;
   }
   .video-meta-title{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:19px; margin-top:6px; line-height:1.3; }
@@ -271,7 +271,7 @@
     font-family:'Work Sans', sans-serif;
   }
   .video-disclaimer{
-    margin:16px 18px 0; font-size:11px; color:var(--ink-soft); line-height:1.6;
+    margin:16px 18px 0; font-size:12.5px; color:var(--ink-soft); line-height:1.6;
     padding:10px 12px; background:var(--teal-soft); border-radius:10px;
   }
 
@@ -338,7 +338,7 @@
   .para-title{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px; margin-bottom:4px; }
   .para-preview{ font-size:13.5px !important; font-weight:400 !important; color:var(--ink-soft); line-height:1.5; }
   .para-meta{
-    font-family:'Space Mono', monospace; font-size:10px; color:var(--ink-soft);
+    font-family:'Space Mono', monospace; font-size:11.5px; color:var(--ink-soft);
     margin-top:8px; background:var(--bg); display:inline-block; padding:3px 8px; border-radius:20px;
   }
   .para-textarea{ min-height:120px; }
@@ -806,6 +806,13 @@ function compareLine(key, text){
 }
 
 /* ============ TOAST ============ */
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 let toastTimer = null;
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -1303,8 +1310,8 @@ function renderParagraphHome(){
       card.style.cursor = 'pointer';
       card.innerHTML = `
         <button class="phrase-del-btn" data-del="${p.id}">🗑</button>
-        ${p.title ? `<div class="para-title">${p.title}</div>` : ''}
-        <div class="en-text para-preview">${preview}</div>
+        ${p.title ? `<div class="para-title">${escapeHtml(p.title)}</div>` : ''}
+        <div class="en-text para-preview">${escapeHtml(preview)}</div>
         <div class="para-meta">${words}단어</div>
       `;
       card.addEventListener('click', (e) => {
@@ -1321,41 +1328,50 @@ function renderParagraphHome(){
 }
 
 /* ============ RENDER: ADD PARAGRAPH FORM ============ */
-function renderAddParagraphForm(){
+function renderAddParagraphForm(editId){
+  const editing = editId ? customParagraphs.find(p => p.id === editId) : null;
   const app = document.getElementById('app');
   app.innerHTML = `
     <div class="topbar">
       <button class="back-btn" id="addParaBackBtn">←</button>
       <div style="flex:1">
-        <div class="topbar-title">➕ 문장/문단 등록하기</div>
+        <div class="topbar-title">${editing ? '✏️ 문단 수정하기' : '➕ 문장/문단 등록하기'}</div>
         <div class="topbar-sub">연습하고 싶은 내용을 통째로 붙여넣으세요</div>
       </div>
     </div>
     <div style="padding-top:18px;">
       <div class="form-group">
         <label class="form-label">제목 (선택)</label>
-        <input class="form-input" id="paraTitleInput" placeholder="예: 자기소개 스크립트" />
+        <input class="form-input" id="paraTitleInput" placeholder="예: 자기소개 스크립트" value="${editing ? escapeHtml(editing.title) : ''}" />
       </div>
       <div class="form-group">
         <label class="form-label">영어 문장 / 문단 *</label>
-        <textarea class="form-input form-textarea para-textarea" id="paraEnInput" placeholder="연습하고 싶은 문장이나 문단을 통째로 붙여넣으세요."></textarea>
+        <textarea class="form-input form-textarea para-textarea" id="paraEnInput" placeholder="연습하고 싶은 문장이나 문단을 통째로 붙여넣으세요.">${editing ? escapeHtml(editing.text) : ''}</textarea>
       </div>
       <div class="form-group">
         <label class="form-label">한국어 뜻 / 메모 (선택)</label>
-        <textarea class="form-input form-textarea" id="paraKoInput" placeholder="뜻이나 참고 메모를 적어두세요."></textarea>
+        <textarea class="form-input form-textarea" id="paraKoInput" placeholder="뜻이나 참고 메모를 적어두세요.">${editing ? escapeHtml(editing.ko || '') : ''}</textarea>
       </div>
-      <button class="form-save-btn" id="saveParaBtn">저장하기</button>
+      <button class="form-save-btn" id="saveParaBtn">${editing ? '수정 저장하기' : '저장하기'}</button>
     </div>
   `;
-  document.getElementById('addParaBackBtn').onclick = renderParagraphHome;
+  document.getElementById('addParaBackBtn').onclick = editing ? (() => renderParagraphDetail(editing.id)) : renderParagraphHome;
   document.getElementById('saveParaBtn').onclick = async () => {
     const title = document.getElementById('paraTitleInput').value.trim();
     const text = document.getElementById('paraEnInput').value.trim();
     const ko = document.getElementById('paraKoInput').value.trim();
     if(!text){ showToast('문장이나 문단을 입력해주세요.'); return; }
-    customParagraphs.push({ id: Date.now().toString(), title, text, ko });
-    await saveCustomParagraphs();
-    renderParagraphHome();
+    if(editing){
+      editing.title = title;
+      editing.text = text;
+      editing.ko = ko;
+      await saveCustomParagraphs();
+      renderParagraphDetail(editing.id);
+    } else {
+      customParagraphs.push({ id: Date.now().toString(), title, text, ko });
+      await saveCustomParagraphs();
+      renderParagraphHome();
+    }
   };
 }
 
@@ -1372,17 +1388,19 @@ function renderParagraphDetail(id){
         <div class="topbar-title">📄 ${p.title || '문단 연습'}</div>
         <div class="topbar-sub">${p.text.trim().split(/\s+/).filter(Boolean).length}단어</div>
       </div>
+      <button class="back-btn" id="paraDetailEditBtn" title="수정" style="margin-right:6px;">✏️</button>
       <button class="back-btn" id="paraDetailDelBtn" title="삭제">🗑</button>
     </div>
     <div class="phrase-list" style="padding-top:14px;">
       <div class="phrase-card">
-        <div class="en-text" style="white-space:pre-wrap; line-height:1.6;">${p.text}</div>
-        ${p.ko ? `<div class="ko-text" style="white-space:pre-wrap; margin-top:8px;">${p.ko}</div>` : ''}
+        <div class="en-text" style="white-space:pre-wrap; line-height:1.6;">${escapeHtml(p.text)}</div>
+        ${p.ko ? `<div class="ko-text" style="white-space:pre-wrap; margin-top:8px;">${escapeHtml(p.ko)}</div>` : ''}
         <div class="line-actions" id="actions-${key}"></div>
       </div>
     </div>
   `;
   document.getElementById('paraDetailBackBtn').onclick = renderParagraphHome;
+  document.getElementById('paraDetailEditBtn').onclick = () => renderAddParagraphForm(p.id);
   document.getElementById('paraDetailDelBtn').onclick = () => deleteCustomParagraph(p.id);
   renderPhraseActions(key, p.text);
 }
