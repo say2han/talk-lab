@@ -166,6 +166,7 @@
   }
   .act-btn:active{ transform:scale(0.94); }
   .act-listen{ background:var(--teal); color:#fff; }
+  .act-listen.listening{ background:#164F47; }
   .act-record{ background:var(--coral); color:#fff; }
   .act-record.recording{ background:var(--coral-deep); }
   .act-play{ background:var(--paper); color:var(--ink); border:1.5px solid var(--line); }
@@ -1154,6 +1155,7 @@ let mediaChunks = [];
 let recordingKey = null;
 let mediaStream = null;
 let enVoice = null;
+let speakingKey = null;
 
 /* ============ STORAGE ============
    Priority: (1) window.storage — Claude artifact only.
@@ -1267,6 +1269,33 @@ function speak(text, onend){
   speechSynthesis.speak(u);
 }
 
+function resetListenBtn(btnEl){
+  if(btnEl){ btnEl.textContent = '🔊 듣기'; btnEl.classList.remove('listening'); }
+}
+
+function toggleListen(key, text, btnEl){
+  // Tapping the button for the one currently speaking stops it.
+  if(speakingKey === key){
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    resetListenBtn(btnEl);
+    speakingKey = null;
+    return;
+  }
+  // Something else is speaking — stop it and reset any visible "stop" buttons.
+  if(speakingKey){
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    document.querySelectorAll('.act-listen.listening').forEach(b => resetListenBtn(b));
+  }
+  speakingKey = key;
+  if(btnEl){ btnEl.textContent = '⏹ 중지'; btnEl.classList.add('listening'); }
+  speak(text, () => {
+    if(speakingKey === key){
+      resetListenBtn(btnEl);
+      speakingKey = null;
+    }
+  });
+}
+
 /* ============ RECORDING ============ */
 async function toggleRecord(key, btnEl, waveEl, onDone){
   if(recordingKey === key){
@@ -1317,6 +1346,10 @@ function playRecording(key){
 }
 
 function compareLine(key, text){
+  if(speakingKey){
+    document.querySelectorAll('.act-listen.listening').forEach(b => resetListenBtn(b));
+    speakingKey = null;
+  }
   speak(text, () => {
     setTimeout(() => {
       if(recordings[key]) playRecording(key);
@@ -1599,7 +1632,7 @@ function renderLineActions(key, topicId, idx, line){
   const compareBtn = wrap.querySelector('[data-action="compare"]');
   const waveEl = document.getElementById(`wave-${key}`);
 
-  listenBtn.onclick = () => speak(line.en);
+  listenBtn.onclick = () => toggleListen(key, line.en, listenBtn);
   recordBtn.onclick = async () => {
     await toggleRecord(key, recordBtn, waveEl, () => {
       markPracticed(topicId, idx);
@@ -1652,7 +1685,7 @@ function renderPhraseActions(key, text){
   const compareBtn = wrap.querySelector('[data-action="compare"]');
   const waveEl = document.getElementById(`wave-${key}`);
 
-  listenBtn.onclick = () => speak(text);
+  listenBtn.onclick = () => toggleListen(key, text, listenBtn);
   recordBtn.onclick = async () => {
     await toggleRecord(key, recordBtn, waveEl, () => renderPhraseActions(key, text));
   };
