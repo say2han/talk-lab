@@ -1,0 +1,13 @@
+{
+  "name": "Talk Lab - 영어 회화 연습",
+  "short_name": "Talk Lab",
+  "description": "상황별 대화, 표현, 문단을 듣고 녹음하며 연습하는 영어 회화 앱",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F2F5F1",
+  "theme_color": "#1F6F64",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

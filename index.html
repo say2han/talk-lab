@@ -5,6 +5,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Talk Lab · 영어 회화 연습</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1F6F64">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Talk Lab">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -489,6 +497,306 @@ const TOPICS = [
       {sp:'A', en:"Thank you. It's not about the mess, it's about taking care of yourself.", ko:"고마워. 어질러진 게 문제가 아니라, 스스로를 챙기는 게 중요한 거야."},
       {sp:'B', en:"I get it, Mom. I'll try to keep it up from now on.", ko:"알겠어요, 엄마. 앞으로 계속 신경 쓸게요."}
     ]
+  },
+  {
+    id:'visitor', icon:'🧭', color:'#EAF0FB',
+    titleEn:'Showing a Visitor Around', titleKo:'방문객 안내하기',
+    roleA:'EMPLOYEE', roleB:'VISITOR',
+    lines:[
+      {sp:'A', en:"Hi there, you must be here for the 10 o'clock meeting. Welcome!", ko:"안녕하세요, 10시 미팅 때문에 오셨죠? 환영합니다!"},
+      {sp:'B', en:"Yes, that's right. Thanks for having me.", ko:"네, 맞아요. 초대해주셔서 감사합니다."},
+      {sp:'A', en:"No problem. Let me show you around before we get started.", ko:"별말씀을요. 시작하기 전에 안내해드릴게요."},
+      {sp:'B', en:"That'd be great, thanks.", ko:"그럼 좋죠, 감사합니다."},
+      {sp:'A', en:"This is the main office area, and the meeting rooms are just down this hall.", ko:"여기가 메인 사무 공간이고, 회의실은 이 복도 끝에 있어요.", tip:"“just down this hall”은 “이 복도를 따라가면 바로”라는 뜻이에요."},
+      {sp:'B', en:"Got it. Where's the restroom, just in case?", ko:"알겠습니다. 혹시 몰라서 그러는데 화장실은 어디예요?"},
+      {sp:'A', en:"Right around the corner, past the kitchen.", ko:"모퉁이 바로 돌면, 탕비실 지나서 있어요."},
+      {sp:'B', en:"Perfect, thank you so much.", ko:"완벽하네요, 정말 감사합니다."}
+    ]
+  },
+  {
+    id:'officelife', icon:'🖥️', color:'#F1E9F7',
+    titleEn:'In the Office', titleKo:'사무실에서',
+    roleA:'COWORKER A', roleB:'COWORKER B',
+    lines:[
+      {sp:'A', en:"Morning! Did you get a chance to look at my email?", ko:"좋은 아침! 혹시 제 이메일 확인해보셨어요?"},
+      {sp:'B', en:"Not yet, sorry — it's been a crazy morning.", ko:"아직이요, 죄송해요 — 아침이 너무 정신없었네요."},
+      {sp:'A', en:"No worries, whenever you get a chance.", ko:"괜찮아요, 시간 되실 때 봐주세요."},
+      {sp:'B', en:"I'll take a look right after this call.", ko:"이 통화 끝나고 바로 확인할게요."},
+      {sp:'A', en:"Sounds good. Also, are we still on for the 2 pm meeting?", ko:"좋아요. 그리고 오후 2시 미팅은 그대로 진행되나요?", tip:"“are we still on for ~?”는 약속이나 일정이 그대로 유효한지 확인할 때 쓰는 표현이에요."},
+      {sp:'B', en:"Yes, it's still on. I'll send the agenda beforehand.", ko:"네, 그대로 진행돼요. 미리 안건 보내드릴게요."},
+      {sp:'A', en:"Great, thanks for staying on top of it.", ko:"좋네요, 꼼꼼히 챙겨주셔서 감사해요."},
+      {sp:'B', en:"Of course, talk soon!", ko:"당연하죠, 곧 얘기해요!"}
+    ]
+  },
+  {
+    id:'teamwork', icon:'🤝', color:'#EFF6E7',
+    titleEn:'Team Work', titleKo:'팀워크',
+    roleA:'TEAM LEAD', roleB:'TEAM MEMBER',
+    lines:[
+      {sp:'A', en:"How's the project coming along on your end?", ko:"프로젝트는 그쪽에서 어떻게 진행되고 있어요?"},
+      {sp:'B', en:"Pretty good, I just need a bit more time on the design part.", ko:"꽤 잘 되고 있어요, 디자인 부분만 시간이 조금 더 필요해요."},
+      {sp:'A', en:"No problem, how much time do you think you'll need?", ko:"괜찮아요, 시간이 얼마나 더 필요할 것 같아요?"},
+      {sp:'B', en:"Maybe two more days, if that works.", ko:"이틀 정도면 될 것 같아요, 괜찮으시다면요."},
+      {sp:'A', en:"That works for me. Let me know if you need any help.", ko:"저는 괜찮아요. 도움 필요하면 말씀해주세요."},
+      {sp:'B', en:"Actually, could you double-check the numbers I sent you?", ko:"사실, 제가 보내드린 수치 좀 다시 확인해주실 수 있어요?", tip:"“double-check”은 “다시 한 번 확인하다”라는 뜻으로 업무에서 정말 자주 쓰여요."},
+      {sp:'A', en:"Sure, I'll take a look this afternoon.", ko:"물론이죠, 오늘 오후에 확인해볼게요."},
+      {sp:'B', en:"Thanks, I really appreciate the support.", ko:"감사해요, 도와주셔서 정말 감사합니다."}
+    ]
+  },
+  {
+    id:'supplyroom', icon:'📎', color:'#FDEFE0',
+    titleEn:'In the Office Supply Room', titleKo:'사무용품실에서',
+    roleA:'YOU', roleB:'COWORKER',
+    lines:[
+      {sp:'A', en:"Hey, do you know where the extra printer paper is?", ko:"저기, 여분 프린터 용지가 어디 있는지 아세요?"},
+      {sp:'B', en:"Yeah, it's in the supply room, second shelf from the top.", ko:"네, 비품실에 있어요, 위에서 두 번째 선반이요."},
+      {sp:'A', en:"Thanks. Do we have more staplers too? Mine just broke.", ko:"감사해요. 스테이플러도 더 있나요? 제 것이 방금 고장났어요."},
+      {sp:'B', en:"I think so, check the drawer under the shelf.", ko:"아마 있을 거예요, 선반 아래 서랍 확인해보세요."},
+      {sp:'A', en:"Found it! Do I need to log this somewhere?", ko:"찾았어요! 이거 어디에 기록해야 하나요?", tip:"“log this”는 “이걸 기록하다, 장부에 적다”라는 뜻이에요."},
+      {sp:'B', en:"No, just the bigger stuff like new equipment.", ko:"아니요, 새 장비 같은 큰 물건만 기록하면 돼요."},
+      {sp:'A', en:"Got it, thanks for the help.", ko:"알겠습니다, 도와주셔서 감사해요."},
+      {sp:'B', en:"Anytime!", ko:"언제든지요!"}
+    ]
+  },
+  {
+    id:'workhours', icon:'⏰', color:'#FCEAE6',
+    titleEn:'How Many Hours Do You Work?', titleKo:'근무시간 문의하기',
+    roleA:'NEW EMPLOYEE', roleB:'MANAGER',
+    lines:[
+      {sp:'A', en:"Can I ask what the usual working hours are here?", ko:"여기 보통 근무시간이 어떻게 되는지 여쭤봐도 될까요?"},
+      {sp:'B', en:"Sure, it's nine to six, with an hour for lunch.", ko:"네, 9시부터 6시까지고, 점심시간 1시간이에요."},
+      {sp:'A', en:"Got it. Is there any flexibility with start times?", ko:"알겠습니다. 출근 시간에 유연성이 있나요?"},
+      {sp:'B', en:"Yes, actually — you can start anytime between eight and ten.", ko:"네, 사실 8시에서 10시 사이 아무 때나 출근할 수 있어요.", tip:"“flexibility”는 “유연성”이라는 뜻으로, 근무 형태를 물을 때 자주 등장해요."},
+      {sp:'A', en:"That's really convenient. What about overtime?", ko:"정말 편리하네요. 초과 근무는 어떤가요?"},
+      {sp:'B', en:"It's rare, but if it happens, you'll get compensated.", ko:"드물긴 한데, 발생하면 그만큼 보상받아요."},
+      {sp:'A', en:"That sounds fair. Thanks for explaining.", ko:"공정하네요. 설명해주셔서 감사합니다."},
+      {sp:'B', en:"No problem, let me know if you have more questions.", ko:"별말씀을요, 더 궁금한 거 있으면 말씀해주세요."}
+    ]
+  },
+  {
+    id:'workshifts', icon:'🔄', color:'#E7F1F6',
+    titleEn:'Work Shifts', titleKo:'교대근무',
+    roleA:'SUPERVISOR', roleB:'EMPLOYEE',
+    lines:[
+      {sp:'A', en:"You're on the morning shift this week, six to two.", ko:"이번 주는 오전 근무예요, 6시부터 2시까지요."},
+      {sp:'B', en:"Got it. Is there any chance I could swap with someone?", ko:"알겠습니다. 혹시 다른 사람과 바꿀 수 있을까요?"},
+      {sp:'A', en:"Depends, do you have someone in mind?", ko:"상황에 따라 다른데, 생각해둔 사람 있어요?"},
+      {sp:'B', en:"Yeah, I think Sam might be willing to switch with me.", ko:"네, 샘이 저랑 바꿔줄 수 있을 것 같아요."},
+      {sp:'A', en:"Alright, just have Sam confirm with me directly.", ko:"좋아요, 샘한테 저한테 직접 확인해달라고 하세요."},
+      {sp:'B', en:"Will do, thanks for being flexible.", ko:"그렇게 할게요, 유연하게 봐주셔서 감사해요.", tip:"“Will do.”는 “그렇게 할게요”라는 뜻의 아주 짧고 자연스러운 대답이에요."},
+      {sp:'A', en:"No problem, just try to give more notice next time.", ko:"괜찮아요, 다음엔 좀 더 미리 알려주세요."},
+      {sp:'B', en:"Understood, I'll keep that in mind.", ko:"알겠습니다, 명심할게요."}
+    ]
+  },
+  {
+    id:'familyrules', icon:'🏠', color:'#FFF3DE',
+    titleEn:'Family Rules and Responsibilities', titleKo:'가족 규칙과 책임',
+    roleA:'PARENT', roleB:'TEEN',
+    lines:[
+      {sp:'A', en:"Before you go out, let's go over the house rules again.", ko:"나가기 전에, 집안 규칙을 다시 한 번 짚고 넘어가자."},
+      {sp:'B', en:"Okay, I know — home by ten and text you when I leave.", ko:"네, 알아요 — 10시까지 귀가하고, 나갈 때 문자 드리기."},
+      {sp:'A', en:"Right, and please let me know if your plans change.", ko:"맞아, 그리고 계획이 바뀌면 꼭 알려줘.", tip:"“let me know if ~ changes”는 상황 변화를 미리 알려달라고 부탁할 때 자주 쓰는 표현이에요."},
+      {sp:'B', en:"I will. Can I stay a bit later if everyone else is?", ko:"그럴게요. 다른 애들도 늦게까지 있으면 저도 조금 더 있어도 돼요?"},
+      {sp:'A', en:"Let's stick to ten for now, and we can talk about it later.", ko:"일단 10시로 하고, 나중에 다시 얘기해보자."},
+      {sp:'B', en:"That's fair. I'll head home on time.", ko:"그게 맞는 것 같아요. 제시간에 들어올게요."},
+      {sp:'A', en:"Thanks for understanding. Have a good time tonight.", ko:"이해해줘서 고마워. 오늘 즐겁게 보내."},
+      {sp:'B', en:"Thanks, Mom. I'll see you later.", ko:"고마워요, 엄마. 이따 봬요."}
+    ]
+  },
+  {
+    id:'wastingthings', icon:'💡', color:'#EAF0FB',
+    titleEn:'The Cost of Wasting Things', titleKo:'물건 낭비에 대해 이야기하기',
+    roleA:'PARENT', roleB:'CHILD',
+    lines:[
+      {sp:'A', en:"I noticed you left the lights on in your room again.", ko:"네 방에 불 또 켜놓고 나온 거 봤어."},
+      {sp:'B', en:"Sorry, I forgot. I'll be more careful.", ko:"죄송해요, 깜빡했어요. 더 신경 쓸게요."},
+      {sp:'A', en:"It adds up over time, both the cost and the waste.", ko:"이런 게 쌓이면 비용도 낭비도 커져.", tip:"“It adds up”은 “조금씩 쌓여서 커지다”라는 뜻으로 자주 쓰이는 표현이에요."},
+      {sp:'B', en:"I didn't really think about it that way.", ko:"그렇게까지는 생각 못 했어요."},
+      {sp:'A', en:"That's okay, it's just something worth being mindful of.", ko:"괜찮아, 그냥 신경 써볼 만한 부분이라서 그래."},
+      {sp:'B', en:"Got it. I'll try to turn things off when I leave a room.", ko:"알겠어요. 방에서 나갈 때 끄도록 노력할게요."},
+      {sp:'A', en:"I appreciate that. Small habits really do make a difference.", ko:"고마워. 작은 습관들이 정말 차이를 만들어."},
+      {sp:'B', en:"Makes sense. I'll keep it in mind from now on.", ko:"이해돼요. 앞으로 신경 쓸게요."}
+    ]
+  },
+  {
+    id:'housekeys', icon:'🔑', color:'#F1E9F7',
+    titleEn:'Where Are the House Keys?', titleKo:'열쇠 어디 갔지?',
+    roleA:'YOU', roleB:'FAMILY MEMBER',
+    lines:[
+      {sp:'A', en:"Have you seen the house keys anywhere? I can't find them.", ko:"집 열쇠 어디서 봤어? 못 찾겠어."},
+      {sp:'B', en:"Did you check the hook by the front door?", ko:"현관문 옆 고리에 있는지 확인해봤어?"},
+      {sp:'A', en:"Yeah, they're not there. That's usually where I leave them.", ko:"응, 거기 없어. 보통 거기 두는데."},
+      {sp:'B', en:"Maybe they're still in your jacket pocket from yesterday.", ko:"어제 입었던 재킷 주머니에 아직 있을지도 몰라.", tip:"“Maybe they're still in ~”은 물건을 찾을 때 가능성을 제안하는 자연스러운 표현이에요."},
+      {sp:'A', en:"Good idea, let me check. ... Found them, thanks!", ko:"좋은 생각이야, 확인해볼게. ...찾았어, 고마워!"},
+      {sp:'B', en:"No problem. Maybe we should get a key holder by the door.", ko:"별말씀을. 현관에 열쇠 걸이 하나 두는 게 좋겠다."},
+      {sp:'A', en:"That's a great idea, actually. Let's pick one up this week.", ko:"진짜 좋은 생각이네. 이번 주에 하나 사자."},
+      {sp:'B', en:"Sounds good. That should save us some time in the mornings.", ko:"좋아. 그럼 아침마다 시간을 좀 아낄 수 있겠다."}
+    ]
+  },
+  {
+    id:'savingmoney', icon:'🐖', color:'#FCEAE6',
+    titleEn:'Teaching Kids How to Save Money', titleKo:'저축하는 법 가르치기',
+    roleA:'PARENT', roleB:'CHILD',
+    lines:[
+      {sp:'A', en:"Since you're getting an allowance now, let's talk about saving.", ko:"이제 용돈을 받으니까, 저축에 대해 얘기해보자."},
+      {sp:'B', en:"Okay, how much should I save each week?", ko:"네, 매주 얼마씩 저축하면 좋을까요?"},
+      {sp:'A', en:"A good rule of thumb is to save at least half of what you get.", ko:"보통 받는 돈의 절반 정도는 저축하는 게 좋은 기준이야.", tip:"“a good rule of thumb”은 “대략적인 기준, 경험칙”이라는 뜻이에요."},
+      {sp:'B', en:"That makes sense. What should I save it for?", ko:"이해돼요. 뭘 위해서 저축하면 좋을까요?"},
+      {sp:'A', en:"Whatever you want — a game, a trip, or just for later.", ko:"네가 원하는 거 뭐든 — 게임이든, 여행이든, 아니면 그냥 나중을 위해서든."},
+      {sp:'B', en:"I think I'll save up for a new bike.", ko:"저는 새 자전거 사려고 모아볼래요."},
+      {sp:'A', en:"That's a great goal. We can track your progress together.", ko:"좋은 목표네. 우리 같이 진행 상황을 확인해보자."},
+      {sp:'B', en:"Sounds fun. Thanks for teaching me this.", ko:"재밌겠어요. 이런 거 가르쳐주셔서 감사해요."}
+    ]
+  },
+  {
+    id:'birthdayparty', icon:'🎂', color:'#FBEAF0',
+    titleEn:'Catering for a Birthday Party', titleKo:'생일파티 케이터링 문의하기',
+    roleA:'CUSTOMER', roleB:'CATERER',
+    lines:[
+      {sp:'A', en:"Hi, I'd like to get a quote for catering a birthday party.", ko:"안녕하세요, 생일파티 케이터링 견적을 받고 싶은데요."},
+      {sp:'B', en:"Sure, how many guests are you expecting?", ko:"네, 손님이 몇 분 정도 오실 예정인가요?"},
+      {sp:'A', en:"Around thirty people, mostly kids and a few adults.", ko:"30명 정도이고, 대부분 아이들이고 어른도 몇 분 계세요."},
+      {sp:'B', en:"Got it. Do you have any dietary restrictions to consider?", ko:"알겠습니다. 고려해야 할 식단 제한이 있으신가요?", tip:"“dietary restrictions”는 “식단 제한(알레르기, 채식 등)”을 뜻하는 표현이에요."},
+      {sp:'A', en:"Yes, a couple of the kids have nut allergies.", ko:"네, 아이 몇 명이 견과류 알레르기가 있어요."},
+      {sp:'B', en:"Not a problem, we'll make sure to label everything clearly.", ko:"문제없어요, 모든 음식에 표시를 명확히 해드릴게요."},
+      {sp:'A', en:"That's reassuring. Can you also handle the cake?", ko:"안심이 되네요. 케이크도 준비해주실 수 있나요?"},
+      {sp:'B', en:"Absolutely, just let us know the flavor you'd like.", ko:"물론이죠, 원하시는 맛만 알려주세요."}
+    ]
+  },
+  {
+    id:'wrongorder', icon:'🧾', color:'#FDEFE0',
+    titleEn:'Wrong Order', titleKo:'잘못된 주문 바로잡기',
+    roleA:'CUSTOMER', roleB:'STAFF',
+    lines:[
+      {sp:'A', en:"Excuse me, I think this isn't what I ordered.", ko:"저기요, 이거 제가 주문한 게 아닌 것 같아요."},
+      {sp:'B', en:"Oh, I'm so sorry about that. What did you order?", ko:"아, 정말 죄송합니다. 어떤 걸 주문하셨나요?"},
+      {sp:'A', en:"I ordered the chicken sandwich, not the veggie one.", ko:"저는 치킨 샌드위치를 주문했는데, 채식 샌드위치가 아니라요."},
+      {sp:'B', en:"My apologies, let me fix that for you right away.", ko:"죄송합니다, 바로 다시 준비해드릴게요.", tip:"“My apologies”는 “Sorry”보다 조금 더 정중한 사과 표현이에요."},
+      {sp:'A', en:"Thank you, I appreciate it.", ko:"감사합니다, 정말 감사해요."},
+      {sp:'B', en:"Would you like something else while you wait?", ko:"기다리시는 동안 다른 거라도 드릴까요?"},
+      {sp:'A', en:"That's kind of you, but I'm fine, thanks.", ko:"친절하시네요, 근데 괜찮아요, 감사합니다."},
+      {sp:'B', en:"Understood, it'll be right out. Sorry again for the mix-up.", ko:"알겠습니다, 곧 나올 거예요. 다시 한 번 혼선 드려 죄송해요."}
+    ]
+  },
+  {
+    id:'pharmacy', icon:'💊', color:'#E7F1F6',
+    titleEn:'At the Pharmacy', titleKo:'약국에서',
+    roleA:'CUSTOMER', roleB:'PHARMACIST',
+    lines:[
+      {sp:'A', en:"Hi, I'm here to pick up a prescription for Kim.", ko:"안녕하세요, 김 씨 앞으로 나온 처방약 받으러 왔어요."},
+      {sp:'B', en:"Sure, can I get your date of birth to confirm?", ko:"네, 확인차 생년월일 알려주시겠어요?"},
+      {sp:'A', en:"It's March 3rd, 1990.", ko:"1990년 3월 3일이에요."},
+      {sp:'B', en:"Great, here you go. Take one tablet twice a day with food.", ko:"좋습니다, 여기 있습니다. 음식과 함께 하루 두 번, 한 알씩 드세요.", tip:"“twice a day”는 “하루에 두 번”이라는 뜻으로 복용법 안내에 자주 쓰여요."},
+      {sp:'A', en:"Got it. Are there any side effects I should watch for?", ko:"알겠습니다. 주의해야 할 부작용이 있나요?"},
+      {sp:'B', en:"Some people feel a bit drowsy, so avoid driving if that happens.", ko:"일부는 약간 졸릴 수 있어서, 그럴 땐 운전을 피하시는 게 좋아요."},
+      {sp:'A', en:"Thanks for letting me know. Anything else I should be aware of?", ko:"알려주셔서 감사해요. 또 알아둘 게 있을까요?"},
+      {sp:'B', en:"Just finish the full course, even if you feel better sooner.", ko:"괜찮아지더라도 처방된 기간은 꼭 다 드세요."}
+    ]
+  },
+  {
+    id:'cartrouble', icon:'🚗', color:'#EFF6E7',
+    titleEn:'Car Trouble — Calling for Help', titleKo:'자동차 고장 신고하기',
+    roleA:'DRIVER', roleB:'ROADSIDE ASSISTANCE',
+    lines:[
+      {sp:'A', en:"Hi, my car broke down and I need some help.", ko:"안녕하세요, 차가 고장 나서 도움이 필요해요."},
+      {sp:'B', en:"Sure, can you tell me your exact location?", ko:"네, 정확한 위치를 알려주시겠어요?"},
+      {sp:'A', en:"I'm on Route 9, just past the gas station near the bridge.", ko:"9번 도로에 있고, 다리 근처 주유소를 막 지난 곳이에요."},
+      {sp:'B', en:"Got it. What seems to be the problem with the car?", ko:"알겠습니다. 차에 어떤 문제가 있는 것 같나요?", tip:"“What seems to be the problem?”은 증상을 물을 때 자주 쓰는 정중한 표현이에요."},
+      {sp:'A', en:"It just stopped suddenly, and now it won't start at all.", ko:"갑자기 멈추더니, 이제 아예 시동이 안 걸려요."},
+      {sp:'B', en:"Okay, we'll send a tow truck. It should arrive in about 30 minutes.", ko:"알겠습니다, 견인차를 보내드릴게요. 30분 정도 걸릴 거예요."},
+      {sp:'A', en:"Thank you. Should I stay in the car while I wait?", ko:"감사합니다. 기다리는 동안 차 안에 있어야 하나요?"},
+      {sp:'B', en:"Yes, and please keep your hazard lights on for safety.", ko:"네, 그리고 안전을 위해 비상등은 켜두세요."}
+    ]
+  },
+  {
+    id:'restaurantcomplaint', icon:'🍽️', color:'#FBEAF0',
+    titleEn:'Restaurant Complaint', titleKo:'식당에서 컴플레인하기',
+    roleA:'CUSTOMER', roleB:'WAITER',
+    lines:[
+      {sp:'A', en:"Excuse me, this soup is completely cold.", ko:"저기요, 이 수프가 완전히 식었어요."},
+      {sp:'B', en:"I'm really sorry about that. Let me get you a hot one right away.", ko:"정말 죄송합니다. 바로 따뜻한 걸로 다시 가져다드릴게요."},
+      {sp:'A', en:"Thank you. Also, we've been waiting quite a while for our mains.", ko:"감사합니다. 그리고 메인 메뉴도 꽤 오래 기다리고 있어요."},
+      {sp:'B', en:"I apologize for the delay. I'll check with the kitchen right now.", ko:"지연에 대해 사과드립니다. 지금 바로 주방에 확인해볼게요.", tip:"“I apologize for the delay”는 지연에 대해 정중히 사과할 때 쓰는 표현이에요."},
+      {sp:'A', en:"I'd appreciate that. We do have another appointment later.", ko:"그래 주시면 감사하겠어요. 저희가 이따 다른 약속이 있어서요."},
+      {sp:'B', en:"Understood, I'll prioritize your order and also comp the soup.", ko:"알겠습니다, 주문 먼저 처리해드리고 수프는 무료로 해드릴게요."},
+      {sp:'A', en:"That's very kind, thank you for taking care of it.", ko:"정말 친절하시네요, 신경 써주셔서 감사해요."},
+      {sp:'B', en:"Of course, thank you for your patience.", ko:"당연히 해드려야죠, 기다려주셔서 감사합니다."}
+    ]
+  },
+  {
+    id:'trafficticket', icon:'🚓', color:'#FCEAE6',
+    titleEn:'A Traffic Ticket', titleKo:'교통 딱지 받기',
+    roleA:'DRIVER', roleB:'POLICE OFFICER',
+    lines:[
+      {sp:'A', en:"Good afternoon, officer. Was I doing something wrong?", ko:"안녕하세요, 경관님. 제가 뭐 잘못한 게 있나요?"},
+      {sp:'B', en:"License and registration, please. You were going 20 over the limit.", ko:"면허증과 등록증 좀 주시겠어요. 제한속도보다 20마일 초과하셨어요."},
+      {sp:'A', en:"I'm sorry, I didn't realize I was going that fast.", ko:"죄송합니다, 그렇게 빨리 달리고 있는지 몰랐어요."},
+      {sp:'B', en:"I understand, but I do need to issue you a citation today.", ko:"이해는 하지만, 오늘은 딱지를 발부해야 할 것 같습니다.", tip:"“issue a citation”은 “딱지를 발부하다”라는 뜻의 공식적인 표현이에요."},
+      {sp:'A', en:"I understand. Can I ask how much the fine will be?", ko:"이해합니다. 벌금이 얼마 정도인지 여쭤봐도 될까요?"},
+      {sp:'B', en:"It'll be listed on the ticket, along with how to pay it.", ko:"딱지에 금액과 납부 방법이 적혀 있을 거예요."},
+      {sp:'A', en:"Okay, thank you for explaining. I'll be more careful.", ko:"알겠습니다, 설명해주셔서 감사해요. 더 조심할게요."},
+      {sp:'B', en:"Please do. Drive safely for the rest of the day.", ko:"꼭 그래주세요. 오늘 남은 시간 안전하게 운전하세요."}
+    ]
+  },
+  {
+    id:'workburnout', icon:'😮‍💨', color:'#F1E9F7',
+    titleEn:'Work Burnout', titleKo:'번아웃에 대해 이야기하기',
+    roleA:'YOU', roleB:'FRIEND',
+    lines:[
+      {sp:'A', en:"Honestly, I've been feeling really burnt out at work lately.", ko:"솔직히, 요즘 회사에서 번아웃이 심하게 온 것 같아."},
+      {sp:'B', en:"I'm sorry to hear that. What's been going on?", ko:"안타깝다. 무슨 일 있었어?"},
+      {sp:'A', en:"I've just been taking on too much, and I can't seem to catch up.", ko:"그냥 일을 너무 많이 떠맡았고, 도무지 따라잡을 수가 없어.", tip:"“burnt out”은 “번아웃 된, 완전히 지친”이라는 뜻으로 자주 쓰이는 표현이에요."},
+      {sp:'B', en:"Have you talked to your manager about lightening your load?", ko:"매니저한테 업무량 좀 줄여달라고 얘기해봤어?"},
+      {sp:'A', en:"Not yet, I've been putting it off, honestly.", ko:"아직 안 했어, 솔직히 계속 미루고 있었어."},
+      {sp:'B', en:"I think it's worth bringing up before it gets worse.", ko:"더 심해지기 전에 얘기해보는 게 좋을 것 같아."},
+      {sp:'A', en:"You're right. I'll try to have that conversation this week.", ko:"네 말이 맞아. 이번 주에 그 얘기 해볼게."},
+      {sp:'B', en:"Good. And make sure you're taking some time for yourself too.", ko:"좋아. 그리고 너 자신을 위한 시간도 좀 챙겨."}
+    ]
+  },
+  {
+    id:'returningshoes', icon:'👟', color:'#EAF0FB',
+    titleEn:'Returning a Pair of Shoes', titleKo:'신발 반품하기',
+    roleA:'CUSTOMER', roleB:'STORE CLERK',
+    lines:[
+      {sp:'A', en:"Hi, I'd like to return these shoes, please.", ko:"안녕하세요, 이 신발을 반품하고 싶은데요."},
+      {sp:'B', en:"Sure, may I ask what the issue is?", ko:"네, 어떤 문제가 있으신지 여쭤봐도 될까요?"},
+      {sp:'A', en:"They're just a bit too small, unfortunately.", ko:"아쉽게도 사이즈가 좀 작아서요."},
+      {sp:'B', en:"No problem. Do you have the receipt with you?", ko:"괜찮습니다. 영수증 가지고 계신가요?"},
+      {sp:'A', en:"Yes, right here. Can I exchange them for a bigger size instead?", ko:"네, 여기 있어요. 혹시 더 큰 사이즈로 교환도 가능할까요?", tip:"“Can I exchange them for ~ instead?”는 반품 대신 교환을 요청할 때 쓰는 표현이에요."},
+      {sp:'B', en:"Of course, let me check what we have in stock.", ko:"물론이죠, 재고 확인해볼게요."},
+      {sp:'A', en:"Thank you, I appreciate it.", ko:"감사합니다, 정말 감사해요."},
+      {sp:'B', en:"We have one size up available. Would you like to try it on?", ko:"한 사이즈 큰 게 있어요. 신어보시겠어요?"}
+    ]
+  },
+  {
+    id:'streetfood', icon:'🌭', color:'#FDEFE0',
+    titleEn:'Buying Street Food', titleKo:'길거리 음식 사기',
+    roleA:'CUSTOMER', roleB:'VENDOR',
+    lines:[
+      {sp:'A', en:"Hi, what do you recommend here?", ko:"안녕하세요, 여기서 뭐가 맛있어요?"},
+      {sp:'B', en:"The grilled corn is really popular, and it's fresh today.", ko:"구운 옥수수가 인기 많고, 오늘 신선해요."},
+      {sp:'A', en:"Sounds good. Can I get one of those, please?", ko:"좋네요. 그거 하나 주시겠어요?"},
+      {sp:'B', en:"Sure thing. Would you like butter and chili powder on it?", ko:"물론이죠. 버터랑 칠리 파우더 뿌려드릴까요?", tip:"“Would you like ~ on it?”은 음식에 토핑을 추가할지 물을 때 쓰는 표현이에요."},
+      {sp:'A', en:"Yes, please, just a little chili powder.", ko:"네, 부탁드려요, 칠리 파우더는 조금만요."},
+      {sp:'B', en:"Here you go. That'll be four dollars.", ko:"여기 있습니다. 4달러예요."},
+      {sp:'A', en:"Here you go. This smells amazing, by the way.", ko:"여기요. 그나저나 냄새가 정말 좋네요."},
+      {sp:'B', en:"Thanks! Enjoy, and come back anytime.", ko:"감사합니다! 맛있게 드세요, 또 오세요."}
+    ]
+  },
+  {
+    id:'financialcounseling', icon:'💰', color:'#E7F1F6',
+    titleEn:'Financial Counselling', titleKo:'재무 상담받기',
+    roleA:'CLIENT', roleB:'FINANCIAL ADVISOR',
+    lines:[
+      {sp:'A', en:"Hi, I'd like some advice on managing my savings better.", ko:"안녕하세요, 저축을 더 잘 관리하는 법에 대해 조언을 좀 받고 싶어요."},
+      {sp:'B', en:"Of course. Can you tell me a bit about your current goals?", ko:"물론이죠. 현재 목표에 대해 조금 말씀해주시겠어요?"},
+      {sp:'A', en:"I'm mainly trying to save up for a house in the next few years.", ko:"주로 몇 년 안에 집을 사려고 저축하고 있어요."},
+      {sp:'B', en:"Got it. Do you currently have a monthly budget you follow?", ko:"알겠습니다. 지금 따르고 계신 월간 예산이 있으신가요?", tip:"“Do you currently have ~?”는 상황을 확인할 때 자주 쓰는 표현이에요."},
+      {sp:'A', en:"Sort of, but I don't always stick to it.", ko:"어느 정도는요, 근데 항상 지키지는 못해요."},
+      {sp:'B', en:"That's really common. Let's start by tracking your expenses for a month.", ko:"정말 흔한 일이에요. 우선 한 달간 지출을 추적해보는 것부터 시작해볼까요."},
+      {sp:'A', en:"That sounds manageable. What should I focus on first?", ko:"그 정도는 할 수 있을 것 같아요. 뭐부터 신경 쓰면 좋을까요?"},
+      {sp:'B', en:"Let's identify your biggest non-essential expenses first.", ko:"먼저 가장 큰 비필수 지출부터 파악해봅시다."}
+    ]
   }
 ];
 
@@ -578,6 +886,206 @@ const REAL_VIDEOS = [
     notes:[
       "우리 앱의 '엄마와 아들의 대화'와 같은 상황이에요. 감정이 다소 섞인 대화라 난이도가 있는 편이에요.",
       "완벽히 다 이해하려 하지 말고, 전체 분위기와 핵심 단어 위주로 먼저 들어보세요. 억양 변화로 감정을 표현하는 방식을 눈여겨보세요."
+    ]
+  },
+  {
+    id:'visitor-real', videoId:'LTRw3s-dNL4',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Business and Work',
+    titleEn:'English Conversation for Business and Work — "Showing a Visitor Around"', titleKo:'방문객 안내하기 (실제 영상)',
+    linkedTopic:'visitor',
+    notes:[
+      "이 영상은 여러 직장 상황이 담긴 모음 영상이에요. 그중 'Showing a Visitor Around' 챕터가 우리 앱의 '방문객 안내하기'와 같은 상황이에요.",
+      "영상 설명란의 타임스탬프를 참고하면 해당 챕터로 바로 이동할 수 있어요."
+    ]
+  },
+  {
+    id:'officelife-real', videoId:'LTRw3s-dNL4',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Business and Work',
+    titleEn:'English Conversation for Business and Work — "In the Office"', titleKo:'사무실에서 (실제 영상)',
+    linkedTopic:'officelife',
+    notes:[
+      "같은 모음 영상의 'In the Office' 챕터가 우리 앱의 '사무실에서'와 같은 상황이에요.",
+      "동료 사이에 오가는 가볍고 자연스러운 업무 대화 톤을 눈여겨보세요."
+    ]
+  },
+  {
+    id:'teamwork-real', videoId:'LTRw3s-dNL4',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Business and Work',
+    titleEn:'English Conversation for Business and Work — "Team Work"', titleKo:'팀워크 (실제 영상)',
+    linkedTopic:'teamwork',
+    notes:[
+      "'Team Work' 챕터가 우리 앱의 '팀워크' 대화와 같은 상황이에요.",
+      "업무 진행 상황을 묻고 답하는 표현, 도움을 요청하는 표현에 집중해서 들어보세요."
+    ]
+  },
+  {
+    id:'supplyroom-real', videoId:'LTRw3s-dNL4',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Business and Work',
+    titleEn:'English Conversation for Business and Work — "In the Office Supply Room"', titleKo:'사무용품실에서 (실제 영상)',
+    linkedTopic:'supplyroom',
+    notes:[
+      "'In the Office Supply Room' 챕터가 우리 앱의 '사무용품실에서'와 같은 상황이에요.",
+      "사물의 위치를 묻고 답하는 짧고 실용적인 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'workhours-real', videoId:'LTRw3s-dNL4',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Business and Work',
+    titleEn:'English Conversation for Business and Work — "How Many Hours Do You Work?"', titleKo:'근무시간 문의하기 (실제 영상)',
+    linkedTopic:'workhours',
+    notes:[
+      "'How Many Hours Do You Work?' 챕터가 우리 앱의 '근무시간 문의하기'와 같은 상황이에요.",
+      "근무 조건을 정중하게 묻는 표현들을 눈여겨보세요."
+    ]
+  },
+  {
+    id:'workshifts-real', videoId:'LTRw3s-dNL4',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Business and Work',
+    titleEn:'English Conversation for Business and Work — "Work Shifts"', titleKo:'교대근무 (실제 영상)',
+    linkedTopic:'workshifts',
+    notes:[
+      "'Work Shifts' 챕터가 우리 앱의 '교대근무' 대화와 같은 상황이에요.",
+      "근무 교대를 요청하고 조율하는 자연스러운 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'familyrules-real', videoId:'VMOHR7oWVds',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Family',
+    titleEn:'Family English Conversation — "Family Rules and Responsibilities"', titleKo:'가족 규칙과 책임 (실제 영상)',
+    linkedTopic:'familyrules',
+    notes:[
+      "이 영상은 여러 가족 대화 상황이 담긴 모음 영상이에요. 그중 'Family Rules and Responsibilities' 챕터가 우리 앱의 상황과 같아요.",
+      "부모와 자녀 사이의 부드럽지만 단호한 말투 차이를 느껴보세요."
+    ]
+  },
+  {
+    id:'wastingthings-real', videoId:'VMOHR7oWVds',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Family',
+    titleEn:'Family English Conversation — "The Cost of Wasting Things"', titleKo:'물건 낭비 이야기 (실제 영상)',
+    linkedTopic:'wastingthings',
+    notes:[
+      "같은 모음 영상의 'The Cost of Wasting Things' 챕터예요.",
+      "타이르는 듯한 부드러운 훈육 표현들을 눈여겨보세요."
+    ]
+  },
+  {
+    id:'housekeys-real', videoId:'VMOHR7oWVds',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Family',
+    titleEn:'Family English Conversation — "Where Are the House Keys?"', titleKo:'열쇠 어디 갔지? (실제 영상)',
+    linkedTopic:'housekeys',
+    notes:[
+      "'Where Are the House Keys?' 챕터가 우리 앱의 같은 상황이에요.",
+      "물건을 찾을 때 쓰는 가볍고 일상적인 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'savingmoney-real', videoId:'VMOHR7oWVds',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Family',
+    titleEn:'Family English Conversation — "Teaching Kids How to Save Money"', titleKo:'저축 가르치기 (실제 영상)',
+    linkedTopic:'savingmoney',
+    notes:[
+      "'Teaching Kids How to Save Money' 챕터가 우리 앱의 같은 상황이에요.",
+      "돈과 저축에 관한 쉬운 설명 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'birthdayparty-real', videoId:'JbfFonbvQrc',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Life',
+    titleEn:'Everyday Life English Conversation — "Catering for a Birthday Party"', titleKo:'생일파티 케이터링 (실제 영상)',
+    linkedTopic:'birthdayparty',
+    notes:[
+      "이 영상도 여러 일상 상황이 담긴 모음 영상이에요. 'Catering for a Birthday Party' 챕터가 우리 앱과 같은 상황이에요.",
+      "행사를 준비할 때 묻고 답하는 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'wrongorder-real', videoId:'JbfFonbvQrc',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Life',
+    titleEn:'Everyday Life English Conversation — "Wrong Order"', titleKo:'잘못된 주문 바로잡기 (실제 영상)',
+    linkedTopic:'wrongorder',
+    notes:[
+      "'Wrong Order' 챕터가 우리 앱과 같은 상황이에요.",
+      "정중하게 문제를 지적하고 사과받는 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'pharmacy-real', videoId:'JbfFonbvQrc',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Life',
+    titleEn:'Everyday Life English Conversation — "At the Pharmacy"', titleKo:'약국에서 (실제 영상)',
+    linkedTopic:'pharmacy',
+    notes:[
+      "'At the Pharmacy' 챕터가 우리 앱과 같은 상황이에요.",
+      "복용법 설명에 쓰이는 표현들을 주의 깊게 들어보세요."
+    ]
+  },
+  {
+    id:'cartrouble-real', videoId:'JbfFonbvQrc',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Life',
+    titleEn:'Everyday Life English Conversation — "Car Trouble"', titleKo:'자동차 고장 신고 (실제 영상)',
+    linkedTopic:'cartrouble',
+    notes:[
+      "'Car Trouble – Calling for Help and Explaining the Problem' 챕터가 우리 앱과 같은 상황이에요.",
+      "위치와 상황을 설명하는 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'restaurantcomplaint-real', videoId:'er9KJuKmfas',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Situations',
+    titleEn:'English Conversation for Everyday Situations — "Restaurant Complaint"', titleKo:'식당 컴플레인 (실제 영상)',
+    linkedTopic:'restaurantcomplaint',
+    notes:[
+      "이 영상도 여러 일상 상황이 담긴 모음 영상이에요. 'Restaurant Complaint' 챕터가 우리 앱과 같은 상황이에요.",
+      "불만을 정중하게 전달하는 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'trafficticket-real', videoId:'er9KJuKmfas',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Situations',
+    titleEn:'English Conversation for Everyday Situations — "A Traffic Ticket"', titleKo:'교통 딱지 받기 (실제 영상)',
+    linkedTopic:'trafficticket',
+    notes:[
+      "'A Traffic Ticket' 챕터가 우리 앱과 같은 상황이에요.",
+      "공식적이고 정중한 말투가 오가는 상황이니 억양에 집중해보세요."
+    ]
+  },
+  {
+    id:'workburnout-real', videoId:'er9KJuKmfas',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Situations',
+    titleEn:'English Conversation for Everyday Situations — "Work Burnout"', titleKo:'번아웃 이야기하기 (실제 영상)',
+    linkedTopic:'workburnout',
+    notes:[
+      "'Work Burnout' 챕터가 우리 앱과 같은 상황이에요.",
+      "감정을 솔직하게 나누는 친구 사이의 대화 톤을 느껴보세요."
+    ]
+  },
+  {
+    id:'returningshoes-real', videoId:'er9KJuKmfas',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Situations',
+    titleEn:'English Conversation for Everyday Situations — "Returning a Pair of Shoes"', titleKo:'신발 반품하기 (실제 영상)',
+    linkedTopic:'returningshoes',
+    notes:[
+      "'Returning a Pair of Shoes' 챕터가 우리 앱과 같은 상황이에요.",
+      "반품과 교환을 요청하는 표현들을 확인해보세요."
+    ]
+  },
+  {
+    id:'streetfood-real', videoId:'er9KJuKmfas',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Situations',
+    titleEn:'English Conversation for Everyday Situations — "Buying Street Food"', titleKo:'길거리 음식 사기 (실제 영상)',
+    linkedTopic:'streetfood',
+    notes:[
+      "'Buying Street Food' 챕터가 우리 앱과 같은 상황이에요.",
+      "캐주얼하고 친근한 판매자-손님 대화 톤을 확인해보세요."
+    ]
+  },
+  {
+    id:'financialcounseling-real', videoId:'er9KJuKmfas',
+    channel:'Easy English (@easyenglish551)', badge:'REAL VIDEO · Everyday Situations',
+    titleEn:'English Conversation for Everyday Situations — "Financial Counselling"', titleKo:'재무 상담받기 (실제 영상)',
+    linkedTopic:'financialcounseling',
+    notes:[
+      "'Financial Counselling' 챕터가 우리 앱과 같은 상황이에요.",
+      "재무 관련 어휘와 차분한 상담 어조를 확인해보세요."
     ]
   }
 ];
