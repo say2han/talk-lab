@@ -1166,6 +1166,7 @@ function renderPhraseHome(){
     </div>
     <button class="add-phrase-btn" id="addPhraseBtn">➕ 내 표현 등록하기</button>
     <button class="add-phrase-btn" id="genPatternBtn" style="background:var(--ink);">🤖 한글로 표현 패턴 만들기</button>
+    <button class="add-phrase-btn" id="pastePatternBtn" style="background:var(--teal);">📋 텍스트로 패턴 추가하기</button>
     ${customPhrases.length ? `
       <div class="section-head">
         <div class="section-title">📌 내가 등록한 표현</div>
@@ -1189,6 +1190,7 @@ function renderPhraseHome(){
   document.getElementById('phraseBackBtn').onclick = renderHome;
   document.getElementById('addPhraseBtn').onclick = renderAddPhraseForm;
   document.getElementById('genPatternBtn').onclick = renderGeneratePatternForm;
+  document.getElementById('pastePatternBtn').onclick = renderPastePatternForm;
 
   if(customPhrases.length){
     const list = document.getElementById('customPhraseList');
@@ -1416,6 +1418,71 @@ async function generatePattern(){
     renderPhraseHome();
   };
   document.getElementById('genRetryBtn').onclick = () => generatePattern();
+}
+
+/* ============ RENDER: PASTE-TEXT PATTERN (no API required) ============ */
+function parsePatternText(raw){
+  const lines = String(raw).split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  if(lines.length < 4) return null;
+  const pattern = lines[0];
+  const titleKo = lines[1];
+  const rest = lines.slice(2);
+  const examples = [];
+  for(let i = 0; i < rest.length; i += 2){
+    const enRaw = rest[i];
+    const koLine = rest[i+1];
+    if(!enRaw || !koLine) break;
+    const en = enRaw.replace(/^\d+[.)]\s*/, '').trim();
+    examples.push({ en, ko: koLine });
+  }
+  if(!examples.length) return null;
+  return { pattern, titleKo, examples };
+}
+
+function renderPastePatternForm(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="pasteBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">📋 텍스트로 패턴 추가하기</div>
+        <div class="topbar-sub">형식대로 붙여넣으면 바로 등록돼요 (API 불필요)</div>
+      </div>
+    </div>
+    <div style="padding-top:18px;">
+      <div class="form-group">
+        <label class="form-label">아래 형식대로 붙여넣어주세요 *</label>
+        <textarea class="form-input form-textarea" id="pasteInput" style="min-height:180px;" placeholder="I'm worried about ~ / I'm concerned that ~
+걱정 · 우려 표현
+1. I'm worried about my English pronunciation.
+내 영어 발음이 걱정스러워.
+2. I'm a little concerned about the deadline.
+마감일이 조금 우려돼."></textarea>
+      </div>
+      <div class="empty-hint">형식: 1번째 줄 = 영어 패턴 · 2번째 줄 = 한글 제목 · 그 다음부터 "번호. 영어문장" 한 줄 + 한글 번역 한 줄을 예문 개수만큼 반복</div>
+      <button class="form-save-btn" id="pasteSubmitBtn">추가하기</button>
+      <div id="pastePreviewArea"></div>
+    </div>
+  `;
+  document.getElementById('pasteBackBtn').onclick = renderPhraseHome;
+  document.getElementById('pasteSubmitBtn').onclick = async () => {
+    const raw = document.getElementById('pasteInput').value;
+    const parsed = parsePatternText(raw);
+    const previewArea = document.getElementById('pastePreviewArea');
+    if(!parsed){
+      previewArea.innerHTML = `<div class="empty-hint">⚠️ 형식을 확인해주세요. 첫 줄은 영어 패턴, 둘째 줄은 한글 제목, 그 다음 번호가 매겨진 영어 문장과 한글 번역이 필요해요.</div>`;
+      return;
+    }
+    customPatterns.push({
+      id: Date.now().toString(),
+      icon: '📋',
+      pattern: parsed.pattern,
+      titleKo: parsed.titleKo,
+      examples: parsed.examples
+    });
+    await saveCustomPatterns();
+    renderPhraseHome();
+  };
 }
 
 /* ============ RENDER: PARAGRAPH HOME ============ */
