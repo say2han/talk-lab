@@ -1164,8 +1164,6 @@ function renderPhraseHome(){
         <div class="topbar-sub">자주 쓰는 문구를 등록하고 연습해보세요</div>
       </div>
     </div>
-    <button class="add-phrase-btn" id="addPhraseBtn">➕ 내 표현 등록하기</button>
-    <button class="add-phrase-btn" id="genPatternBtn" style="background:var(--ink);">🤖 한글로 표현 패턴 만들기</button>
     <button class="add-phrase-btn" id="pastePatternBtn" style="background:var(--teal);">📋 텍스트로 패턴 추가하기</button>
     ${customPhrases.length ? `
       <div class="section-head">
@@ -1173,7 +1171,7 @@ function renderPhraseHome(){
         <div class="section-sub">${customPhrases.length}개</div>
       </div>
       <div class="phrase-list" id="customPhraseList"></div>
-    ` : `<div class="empty-hint">아직 등록한 표현이 없어요. 위 버튼으로 자주 쓰고 싶은 문장을 추가해보세요.</div>`}
+    ` : ''}
     ${customPatterns.length ? `
       <div class="section-head">
         <div class="section-title">🤖 내가 만든 표현 패턴</div>
@@ -1188,8 +1186,6 @@ function renderPhraseHome(){
     <div class="topic-list" id="patternList"></div>
   `;
   document.getElementById('phraseBackBtn').onclick = renderHome;
-  document.getElementById('addPhraseBtn').onclick = renderAddPhraseForm;
-  document.getElementById('genPatternBtn').onclick = renderGeneratePatternForm;
   document.getElementById('pastePatternBtn').onclick = renderPastePatternForm;
 
   if(customPhrases.length){
@@ -1284,141 +1280,6 @@ function renderPatternDetail(pattern, isCustom){
   });
 }
 
-/* ============ RENDER: ADD PHRASE FORM ============ */
-function renderAddPhraseForm(){
-  const app = document.getElementById('app');
-  app.innerHTML = `
-    <div class="topbar">
-      <button class="back-btn" id="addBackBtn">←</button>
-      <div style="flex:1">
-        <div class="topbar-title">➕ 표현 등록하기</div>
-        <div class="topbar-sub">자주 쓰고 싶은 문장을 저장해두세요</div>
-      </div>
-    </div>
-    <div style="padding-top:18px;">
-      <div class="form-group">
-        <label class="form-label">영어 문장 *</label>
-        <textarea class="form-input form-textarea" id="enInput" placeholder="예: I'm worried about my presentation tomorrow."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">한국어 뜻 / 설명 (선택)</label>
-        <input class="form-input" id="koInput" placeholder="예: 내일 발표가 걱정스러워." />
-      </div>
-      <button class="form-save-btn" id="savePhraseBtn">저장하기</button>
-    </div>
-  `;
-  document.getElementById('addBackBtn').onclick = renderPhraseHome;
-  document.getElementById('savePhraseBtn').onclick = async () => {
-    const en = document.getElementById('enInput').value.trim();
-    const ko = document.getElementById('koInput').value.trim();
-    if(!en){ showToast('영어 문장을 입력해주세요.'); return; }
-    customPhrases.push({ id: Date.now().toString(), en, ko });
-    await saveCustomPhrases();
-    renderPhraseHome();
-  };
-}
-
-function deleteCustomPhrase(id){
-  if(!confirm('이 표현을 삭제할까요?')) return;
-  customPhrases = customPhrases.filter(p => p.id !== id);
-  saveCustomPhrases();
-  renderPhraseHome();
-}
-
-/* ============ RENDER: AI GENERATE PATTERN ============ */
-function renderGeneratePatternForm(){
-  const app = document.getElementById('app');
-  app.innerHTML = `
-    <div class="topbar">
-      <button class="back-btn" id="genBackBtn">←</button>
-      <div style="flex:1">
-        <div class="topbar-title">🤖 한글로 표현 패턴 만들기</div>
-        <div class="topbar-sub">한글 표현을 입력하면 AI가 영어 패턴과 예문을 만들어줘요</div>
-      </div>
-    </div>
-    <div style="padding-top:18px;">
-      <div class="form-group">
-        <label class="form-label">한글 표현 *</label>
-        <input class="form-input" id="genKoInput" placeholder="예: ~를 부탁해" />
-      </div>
-      <button class="form-save-btn" id="genSubmitBtn">✨ 생성하기</button>
-      <div id="genResultArea"></div>
-    </div>
-  `;
-  document.getElementById('genBackBtn').onclick = renderPhraseHome;
-  document.getElementById('genSubmitBtn').onclick = () => generatePattern();
-  document.getElementById('genKoInput').addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') generatePattern();
-  });
-}
-
-async function generatePattern(){
-  const input = document.getElementById('genKoInput');
-  const ko = input.value.trim();
-  const resultArea = document.getElementById('genResultArea');
-  const submitBtn = document.getElementById('genSubmitBtn');
-  if(!ko){ showToast('한글 표현을 입력해주세요.'); return; }
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = '생성 중...';
-  resultArea.innerHTML = `<div class="empty-hint">AI가 표현 패턴과 예문을 만들고 있어요...</div>`;
-
-  let generated = null;
-  try{
-    const res = await fetch('/api/generate-phrase', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ ko })
-    });
-    const data = await res.json();
-    if(!res.ok){
-      resultArea.innerHTML = `<div class="empty-hint">⚠️ ${escapeHtml(data.error || '생성에 실패했어요.')}</div>`;
-      submitBtn.disabled = false;
-      submitBtn.textContent = '✨ 생성하기';
-      return;
-    }
-    generated = data;
-  }catch(e){
-    resultArea.innerHTML = `<div class="empty-hint">⚠️ 서버에 연결할 수 없어요. 이 기능은 Vercel에 배포된 상태에서만 작동해요 (Claude 아티팩트 미리보기에서는 작동하지 않아요).</div>`;
-    submitBtn.disabled = false;
-    submitBtn.textContent = '✨ 생성하기';
-    return;
-  }
-
-  submitBtn.disabled = false;
-  submitBtn.textContent = '✨ 생성하기';
-
-  resultArea.innerHTML = `
-    <div class="section-head" style="padding-left:0; padding-right:0;">
-      <div class="section-title">미리보기</div>
-      <div class="section-sub">저장 전에 확인해보세요</div>
-    </div>
-    <div class="phrase-card" style="margin-bottom:12px;">
-      <div class="para-title">${generated.icon || '🤖'} ${escapeHtml(generated.pattern)}</div>
-      <div class="ko-text" style="margin-bottom:10px;">${escapeHtml(generated.titleKo)}</div>
-      ${(generated.examples || []).map(ex => `
-        <div style="padding:8px 0; border-top:1px solid var(--line);">
-          <div class="en-text" style="font-size:14px;">${escapeHtml(ex.en)}</div>
-          <div class="ko-text">${escapeHtml(ex.ko)}</div>
-        </div>
-      `).join('')}
-    </div>
-    <button class="form-save-btn" id="genSaveBtn" style="margin-left:0; margin-right:0; width:100%;">저장하기</button>
-    <button class="add-phrase-btn" id="genRetryBtn" style="background:var(--paper); color:var(--ink); border:1.5px solid var(--line); margin-left:0; margin-right:0; width:100%;">다시 생성하기</button>
-  `;
-  document.getElementById('genSaveBtn').onclick = async () => {
-    customPatterns.push({
-      id: Date.now().toString(),
-      icon: generated.icon || '🤖',
-      pattern: generated.pattern,
-      titleKo: generated.titleKo,
-      examples: generated.examples || []
-    });
-    await saveCustomPatterns();
-    renderPhraseHome();
-  };
-  document.getElementById('genRetryBtn').onclick = () => generatePattern();
-}
 
 /* ============ RENDER: PASTE-TEXT PATTERN (no API required) ============ */
 function parsePatternText(raw){
