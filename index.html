@@ -74,31 +74,31 @@
   }
 
   /* ---------- Home / topic list ---------- */
-  .hero{ padding: 22px 20px 6px; }
+  .hero{ padding: 14px 20px 4px; }
   .hero-eyebrow{
     font-family:'Space Mono', monospace; font-size:13px; letter-spacing:2px;
     text-transform:uppercase; color:var(--coral-deep); font-weight:700;
   }
   .hero-title{
-    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:30px;
-    margin:6px 0 8px; line-height:1.15;
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:22px;
+    margin:4px 0 4px; line-height:1.15;
   }
-  .hero-desc{ font-size:14px; color:var(--ink-soft); line-height:1.55; }
+  .hero-desc{ font-size:12.5px; color:var(--ink-soft); line-height:1.45; }
 
-  .topic-list{ padding: 8px 16px calc(24px + var(--safe-b)); display:flex; flex-direction:column; gap:9px; }
+  .topic-list{ padding: 6px 16px calc(24px + var(--safe-b)); display:flex; flex-direction:column; gap:8px; }
   .topic-card{
-    background:var(--paper); border-radius:14px; padding:10px 12px;
-    box-shadow:var(--shadow); display:flex; align-items:center; gap:11px;
+    background:var(--paper); border-radius:14px; padding:9px 10px;
+    box-shadow:var(--shadow); display:flex; align-items:center; gap:9px;
     border:1px solid var(--line); cursor:pointer; transition:transform .12s ease;
   }
   .topic-card:active{ transform:scale(0.98); }
   .topic-icon{
-    width:38px; height:38px; border-radius:10px; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center; font-size:18px;
+    width:34px; height:34px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:16px;
   }
   .topic-info{ flex:1; min-width:0; }
-  .topic-title-en{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:13.5px; }
-  .topic-title-ko{ font-size:12.5px; color:var(--ink-soft); margin-top:1px; }
+  .topic-title-en{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:13px; }
+  .topic-title-ko{ font-size:12px; color:var(--ink-soft); margin-top:1px; }
   .topic-progress{
     display:flex; align-items:center; gap:5px; margin-top:5px;
   }
@@ -107,24 +107,33 @@
   .progress-num{ font-family:'Space Mono', monospace; font-size:11px; color:var(--ink-soft); flex-shrink:0; }
   .chev{ color:var(--ink-soft); font-size:15px; flex-shrink:0; }
 
+  /* ---------- Rating selector (priority 1/2/3) ---------- */
+  .rating-group{ display:flex; gap:3px; flex-shrink:0; }
+  .rating-btn{
+    width:19px; height:19px; border-radius:50%; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--ink-soft); font-family:'Space Mono', monospace;
+    font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; padding:0; flex-shrink:0;
+  }
+  .rating-btn.active{ background:var(--gold); border-color:var(--gold); color:#fff; }
+
   /* ---------- Big mode-selector cards (home landing) ---------- */
-  .mode-grid{ display:flex; flex-direction:column; gap:11px; padding: 4px 20px 18px; }
+  .mode-grid{ display:flex; flex-direction:column; gap:8px; padding: 2px 20px 14px; }
   .mode-card{
-    background:var(--paper); border-radius:18px; padding:14px 16px;
+    background:var(--paper); border-radius:16px; padding:11px 14px;
     box-shadow:var(--shadow); border:1px solid var(--line); cursor:pointer;
-    display:flex; align-items:center; gap:13px; transition:transform .12s ease;
+    display:flex; align-items:center; gap:12px; transition:transform .12s ease;
   }
   .mode-card:active{ transform:scale(0.98); }
   .mode-icon{
-    width:46px; height:46px; border-radius:14px; flex-shrink:0; font-size:22px;
+    width:36px; height:36px; border-radius:11px; flex-shrink:0; font-size:18px;
     display:flex; align-items:center; justify-content:center;
   }
   .mode-info{ flex:1; min-width:0; }
-  .mode-title{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:16.5px; }
-  .mode-sub{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; line-height:1.4; }
+  .mode-title{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:15px; }
   .mode-count{
-    font-family:'Space Mono', monospace; font-size:11px; color:var(--ink-soft);
-    margin-top:6px; background:var(--bg); display:inline-block; padding:2px 7px; border-radius:20px;
+    font-family:'Space Mono', monospace; font-size:10.5px; color:var(--ink-soft);
+    margin-top:3px; background:var(--bg); display:inline-block; padding:2px 7px; border-radius:20px;
   }
   .mode-chev{ color:var(--ink-soft); font-size:18px; flex-shrink:0; }
 
@@ -158,28 +167,21 @@
   }
   .tip-box span.icon{ flex-shrink:0; }
 
-  .line-actions{ display:flex; gap:7px; margin-top:9px; flex-wrap:wrap; }
-  .act-btn{
-    border:none; border-radius:20px; padding:7px 12px; font-size:12.5px;
-    font-weight:600; display:flex; align-items:center; gap:5px; cursor:pointer;
-    font-family:'Work Sans', sans-serif; transition:transform .1s ease, opacity .15s ease;
+  .line-actions{ display:flex; gap:6px; margin-top:9px; align-items:center; }
+  .mini-btn{
+    border:none; border-radius:50%; width:30px; height:30px; font-size:14px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+    transition:transform .1s ease, opacity .15s ease; padding:0;
   }
-  .act-btn:active{ transform:scale(0.94); }
-  .act-listen{ background:var(--teal); color:#fff; }
-  .act-listen.listening{ background:#164F47; }
-  .act-record{ background:var(--coral); color:#fff; }
-  .act-record.recording{ background:var(--coral-deep); }
-  .act-play{ background:var(--paper); color:var(--ink); border:1.5px solid var(--line); }
-  .act-play:disabled{ opacity:.4; cursor:default; }
-  .act-compare{ background:var(--ink); color:#EFEFE8; }
-  .act-compare:disabled{ opacity:.35; cursor:default; }
-
-  .wave{ display:flex; align-items:center; gap:2px; height:12px; }
-  .wave-bar{ width:2.5px; background:currentColor; border-radius:2px; opacity:.9; }
-  @keyframes wavepulse{
-    0%,100%{ height:4px; } 50%{ height:12px; }
-  }
-  .wave-bar.animate{ animation: wavepulse .6s ease-in-out infinite; }
+  .mini-btn:active{ transform:scale(0.92); }
+  .mini-listen{ background:var(--teal); color:#fff; }
+  .mini-listen.listening{ background:#164F47; }
+  .mini-record{ background:var(--coral); color:#fff; }
+  .mini-record.recording{ background:var(--coral-deep); }
+  .mini-play{ background:var(--paper); color:var(--ink); border:1.5px solid var(--line); }
+  .mini-play:disabled{ opacity:.35; cursor:default; }
+  .mini-compare{ background:var(--ink); color:#EFEFE8; }
+  .mini-compare:disabled{ opacity:.3; cursor:default; }
 
   .done-check{
     position:absolute; top:-6px; right:-6px; width:18px; height:18px;
@@ -1149,6 +1151,10 @@ let currentTopic = null;
 let customPhrases = [];     // [{id, en, ko}]
 let customParagraphs = [];  // [{id, title, text, ko}]
 let customPatterns = [];    // [{id, icon, pattern, titleKo, examples:[{en,ko}]}] — AI-generated
+let customVideos = [];      // [{id, title, videoId}]
+let customSituations = [];  // [{id, icon, titleEn, titleKo, examples:[{en,ko}]}]
+let topicRatings = {};      // { topicId: 1|2|3 }
+let patternRatings = {};    // { patternId: 1|2|3 }
 let recordings = {};        // { "topicId-lineIndex": {blobUrl, blob} }
 let mediaRecorder = null;
 let mediaChunks = [];
@@ -1245,6 +1251,87 @@ async function saveCustomPatterns(){
   await storageSet('custom-patterns', JSON.stringify(customPatterns));
 }
 
+async function loadCustomVideos(){
+  try{
+    const v = await storageGet('custom-videos');
+    if(v){ customVideos = JSON.parse(v); }
+  }catch(e){ customVideos = []; }
+}
+async function saveCustomVideos(){
+  await storageSet('custom-videos', JSON.stringify(customVideos));
+}
+
+async function loadCustomSituations(){
+  try{
+    const v = await storageGet('custom-situations');
+    if(v){ customSituations = JSON.parse(v); }
+  }catch(e){ customSituations = []; }
+}
+async function saveCustomSituations(){
+  await storageSet('custom-situations', JSON.stringify(customSituations));
+}
+
+async function loadRatings(){
+  try{
+    const v = await storageGet('topic-ratings');
+    if(v){ topicRatings = JSON.parse(v); }
+  }catch(e){ topicRatings = {}; }
+  try{
+    const v2 = await storageGet('pattern-ratings');
+    if(v2){ patternRatings = JSON.parse(v2); }
+  }catch(e){ patternRatings = {}; }
+}
+async function saveTopicRatings(){
+  await storageSet('topic-ratings', JSON.stringify(topicRatings));
+}
+async function savePatternRatings(){
+  await storageSet('pattern-ratings', JSON.stringify(patternRatings));
+}
+
+function sortByRating(list, ratingsMap){
+  return list.slice().sort((a, b) => {
+    const ra = ratingsMap[a.id] || 99;
+    const rb = ratingsMap[b.id] || 99;
+    return ra - rb;
+  });
+}
+
+function renderRatingGroup(id, ratingsMap, onChange){
+  const current = ratingsMap[id];
+  const wrap = document.createElement('div');
+  wrap.className = 'rating-group';
+  [1,2,3].forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'rating-btn' + (current === n ? ' active' : '');
+    btn.textContent = n;
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      if(ratingsMap[id] === n){ delete ratingsMap[id]; }
+      else { ratingsMap[id] = n; }
+      onChange();
+    };
+    wrap.appendChild(btn);
+  });
+  return wrap;
+}
+
+function parseYouTubeId(url){
+  if(!url) return null;
+  const patterns = [
+    /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+    /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
+    /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/
+  ];
+  for(const re of patterns){
+    const m = url.match(re);
+    if(m) return m[1];
+  }
+  // If they just pasted a bare 11-char ID
+  if(/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) return url.trim();
+  return null;
+}
+
 /* ============ TTS ============ */
 function pickVoice(){
   const voices = speechSynthesis.getVoices();
@@ -1270,7 +1357,7 @@ function speak(text, onend){
 }
 
 function resetListenBtn(btnEl){
-  if(btnEl){ btnEl.textContent = '🔊 듣기'; btnEl.classList.remove('listening'); }
+  if(btnEl){ btnEl.textContent = '🔊'; btnEl.classList.remove('listening'); }
 }
 
 function toggleListen(key, text, btnEl){
@@ -1284,10 +1371,10 @@ function toggleListen(key, text, btnEl){
   // Something else is speaking — stop it and reset any visible "stop" buttons.
   if(speakingKey){
     if('speechSynthesis' in window) speechSynthesis.cancel();
-    document.querySelectorAll('.act-listen.listening').forEach(b => resetListenBtn(b));
+    document.querySelectorAll('.mini-listen.listening').forEach(b => resetListenBtn(b));
   }
   speakingKey = key;
-  if(btnEl){ btnEl.textContent = '⏹ 중지'; btnEl.classList.add('listening'); }
+  if(btnEl){ btnEl.textContent = '⏹'; btnEl.classList.add('listening'); }
   speak(text, () => {
     if(speakingKey === key){
       resetListenBtn(btnEl);
@@ -1297,7 +1384,7 @@ function toggleListen(key, text, btnEl){
 }
 
 /* ============ RECORDING ============ */
-async function toggleRecord(key, btnEl, waveEl, onDone){
+async function toggleRecord(key, btnEl, onDone){
   if(recordingKey === key){
     // stop
     mediaRecorder.stop();
@@ -1320,8 +1407,7 @@ async function toggleRecord(key, btnEl, waveEl, onDone){
   mediaRecorder = new MediaRecorder(mediaStream);
   recordingKey = key;
   btnEl.classList.add('recording');
-  btnEl.innerHTML = '⏹ 중지';
-  waveEl.querySelectorAll('.wave-bar').forEach(b => b.classList.add('animate'));
+  btnEl.textContent = '⏹';
 
   mediaRecorder.ondataavailable = e => { if(e.data.size > 0) mediaChunks.push(e.data); };
   mediaRecorder.onstop = () => {
@@ -1329,8 +1415,7 @@ async function toggleRecord(key, btnEl, waveEl, onDone){
     const url = URL.createObjectURL(blob);
     recordings[key] = { blob, url };
     btnEl.classList.remove('recording');
-    btnEl.innerHTML = '🎤 다시 녹음';
-    waveEl.querySelectorAll('.wave-bar').forEach(b => b.classList.remove('animate'));
+    btnEl.textContent = '🎤';
     mediaStream.getTracks().forEach(t => t.stop());
     recordingKey = null;
     if(onDone) onDone();
@@ -1347,7 +1432,7 @@ function playRecording(key){
 
 function compareLine(key, text){
   if(speakingKey){
-    document.querySelectorAll('.act-listen.listening').forEach(b => resetListenBtn(b));
+    document.querySelectorAll('.mini-listen.listening').forEach(b => resetListenBtn(b));
     speakingKey = null;
   }
   speak(text, () => {
@@ -1393,6 +1478,7 @@ function renderHome(){
   const totalPracticed = Object.values(progress).reduce((s,a)=>s+a.length,0);
   const totalLines = TOPICS.reduce((s,t)=>s+t.lines.length,0);
   const totalPatternExamples = PHRASE_CATEGORIES.reduce((s,c)=>s+c.examples.length,0);
+  const totalVideos = REAL_VIDEOS.length + customVideos.length;
 
   app.innerHTML = `
     <div class="topbar">
@@ -1404,16 +1490,14 @@ function renderHome(){
     </div>
     <div class="hero">
       <div class="hero-eyebrow">CHOOSE YOUR MODE</div>
-      <div class="hero-title">오늘은 어떻게<br/>연습할까요?</div>
-      <div class="hero-desc">상황을 통째로 연습하거나, 자주 쓰는 표현만 콕 집어 연습해보세요.</div>
+      <div class="hero-title">오늘은 어떻게 연습할까요?</div>
     </div>
     <div class="mode-grid">
       <div class="mode-card" id="situationModeCard">
         <div class="mode-icon" style="background:var(--teal-soft)">🗣</div>
         <div class="mode-info">
           <div class="mode-title">상황 연습</div>
-          <div class="mode-sub">공항, 호텔, 은행 등 상황별 대화를 통째로 듣고 따라 말해보세요.</div>
-          <div class="mode-count">${TOPICS.length}개 상황 · ${totalLines}개 문장</div>
+          <div class="mode-count">${TOPICS.length + customSituations.length}개 상황</div>
         </div>
         <div class="mode-chev">›</div>
       </div>
@@ -1421,8 +1505,15 @@ function renderHome(){
         <div class="mode-icon" style="background:var(--gold-soft)">💬</div>
         <div class="mode-info">
           <div class="mode-title">표현 연습</div>
-          <div class="mode-sub">걱정, 아쉬움, 궁금함 같은 감정 표현 패턴을 익히고, 내 문장도 등록해보세요.</div>
-          <div class="mode-count">${PHRASE_CATEGORIES.length}개 패턴 · ${totalPatternExamples}개 예문${customPhrases.length ? ` · 내 표현 ${customPhrases.length}개` : ''}${customPatterns.length ? ` · AI 패턴 ${customPatterns.length}개` : ''}</div>
+          <div class="mode-count">${PHRASE_CATEGORIES.length + customPatterns.length}개 패턴${customPhrases.length ? ` · 내 표현 ${customPhrases.length}개` : ''}</div>
+        </div>
+        <div class="mode-chev">›</div>
+      </div>
+      <div class="mode-card" id="videoModeCard" style="border-color:#FFD9CF;">
+        <div class="mode-icon" style="background:#FCEAE6">🎬</div>
+        <div class="mode-info">
+          <div class="mode-title">실전 동영상</div>
+          <div class="mode-count">${totalVideos}개 영상</div>
         </div>
         <div class="mode-chev">›</div>
       </div>
@@ -1430,7 +1521,6 @@ function renderHome(){
         <div class="mode-icon" style="background:var(--teal-soft)">📄</div>
         <div class="mode-info">
           <div class="mode-title">문단 연습</div>
-          <div class="mode-sub">긴 문장이나 문단을 직접 등록하고, 통째로 듣고 녹음해서 비교해보세요.</div>
           <div class="mode-count">${customParagraphs.length}개 등록됨</div>
         </div>
         <div class="mode-chev">›</div>
@@ -1439,6 +1529,7 @@ function renderHome(){
   `;
   document.getElementById('situationModeCard').onclick = renderTopicList;
   document.getElementById('phraseModeCard').onclick = renderPhraseHome;
+  document.getElementById('videoModeCard').onclick = renderVideoHome;
   document.getElementById('paragraphModeCard').onclick = renderParagraphHome;
 }
 
@@ -1455,39 +1546,238 @@ function renderTopicList(){
         <div class="topbar-sub">상황을 골라 대화를 연습해보세요</div>
       </div>
     </div>
+    <button class="add-phrase-btn" id="addSituationBtn">➕ 상황 등록하기</button>
     <div class="topic-list" id="topicList"></div>
-    <div class="section-head">
-      <div class="section-title">🎬 실전 영상으로 확인하기</div>
-      <div class="section-sub">실제 원어민 영상</div>
-    </div>
-    <div class="video-scroll" id="videoScroll"></div>
   `;
   document.getElementById('topicListBackBtn').onclick = renderHome;
+  document.getElementById('addSituationBtn').onclick = renderAddSituationForm;
 
   const list = document.getElementById('topicList');
-  TOPICS.forEach(t => {
+  const builtIn = TOPICS.map(t => ({ ...t, _kind:'builtin' }));
+  const custom = customSituations.map(s => ({ ...s, _kind:'custom' }));
+  const merged = sortByRating([...builtIn, ...custom], topicRatings);
+
+  merged.forEach(t => {
+    const isCustom = t._kind === 'custom';
+    const total = isCustom ? t.examples.length : t.lines.length;
     const done = (progress[t.id] || []).length;
-    const total = t.lines.length;
-    const pct = Math.round((done/total)*100);
+    const pct = total ? Math.round((done/total)*100) : 0;
     const card = document.createElement('div');
     card.className = 'topic-card';
     card.innerHTML = `
-      <div class="topic-icon" style="background:${t.color}">${t.icon}</div>
+      <div class="topic-icon" style="background:${t.color || 'var(--gold-soft)'}">${t.icon || '📍'}</div>
       <div class="topic-info">
-        <div class="topic-title-en">${t.titleEn}</div>
-        <div class="topic-title-ko">${t.titleKo}</div>
+        <div class="topic-title-en">${escapeHtml(t.titleEn)}</div>
+        <div class="topic-title-ko">${escapeHtml(t.titleKo)}</div>
         <div class="topic-progress">
           <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
           <div class="progress-num">${done}/${total}</div>
         </div>
       </div>
-      <div class="chev">›</div>
     `;
-    card.onclick = () => renderDialogue(t.id);
+    const ratingWrap = renderRatingGroup(t.id, topicRatings, async () => {
+      await saveTopicRatings();
+      renderTopicList();
+    });
+    card.appendChild(ratingWrap);
+    const chev = document.createElement('div');
+    chev.className = 'chev';
+    chev.textContent = '›';
+    card.appendChild(chev);
+    card.onclick = () => isCustom ? renderSituationDetail(t.id) : renderDialogue(t.id);
     list.appendChild(card);
   });
+}
 
-  const vScroll = document.getElementById('videoScroll');
+/* ============ RENDER: ADD SITUATION (paste format, same as phrase pattern) ============ */
+function renderAddSituationForm(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="addSitBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">➕ 상황 등록하기</div>
+        <div class="topbar-sub">표현 연습과 같은 형식으로 붙여넣으면 돼요</div>
+      </div>
+    </div>
+    <div style="padding-top:18px;">
+      <div class="form-group">
+        <label class="form-label">아래 형식대로 붙여넣어주세요 *</label>
+        <textarea class="form-input form-textarea" id="sitPasteInput" style="min-height:180px;" placeholder="Checking In at a Clinic
+병원 접수하기
+1. Hi, I have a 3 o'clock appointment with Dr. Lee.
+안녕하세요, 3시에 이 선생님과 예약이 있어요.
+2. Could you fill out this form first?
+이 양식 먼저 작성해주시겠어요?"></textarea>
+      </div>
+      <div class="empty-hint">형식: 1번째 줄 = 상황 제목(영어) · 2번째 줄 = 한글 제목 · 그 다음부터 "번호. 영어문장" 한 줄 + 한글 번역 한 줄을 예문 개수만큼 반복</div>
+      <button class="form-save-btn" id="sitSubmitBtn">추가하기</button>
+      <div id="sitPreviewArea"></div>
+    </div>
+  `;
+  document.getElementById('addSitBackBtn').onclick = renderTopicList;
+  document.getElementById('sitSubmitBtn').onclick = async () => {
+    const raw = document.getElementById('sitPasteInput').value;
+    const parsed = parsePatternText(raw);
+    const previewArea = document.getElementById('sitPreviewArea');
+    if(!parsed){
+      previewArea.innerHTML = `<div class="empty-hint">⚠️ 형식을 확인해주세요.</div>`;
+      return;
+    }
+    customSituations.push({
+      id: Date.now().toString(),
+      icon: '📍',
+      color: 'var(--gold-soft)',
+      titleEn: parsed.pattern,
+      titleKo: parsed.titleKo,
+      examples: parsed.examples
+    });
+    await saveCustomSituations();
+    renderTopicList();
+  };
+}
+
+/* ============ RENDER: CUSTOM SITUATION DETAIL (examples list, no dialogue roles) ============ */
+function renderSituationDetail(id){
+  const s = customSituations.find(x => x.id === id);
+  if(!s){ renderTopicList(); return; }
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="sitDetailBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">📍 ${escapeHtml(s.titleEn)}</div>
+        <div class="topbar-sub">${escapeHtml(s.titleKo)}</div>
+      </div>
+      <button class="back-btn" id="sitDetailDelBtn" title="삭제">🗑</button>
+    </div>
+    <div class="phrase-list" id="sitExampleList" style="padding-top:14px;"></div>
+  `;
+  document.getElementById('sitDetailBackBtn').onclick = renderTopicList;
+  document.getElementById('sitDetailDelBtn').onclick = () => {
+    if(!confirm('이 상황을 삭제할까요?')) return;
+    customSituations = customSituations.filter(x => x.id !== id);
+    delete topicRatings[id];
+    saveCustomSituations();
+    saveTopicRatings();
+    renderTopicList();
+  };
+  const list = document.getElementById('sitExampleList');
+  s.examples.forEach((ex, idx) => {
+    const key = `customsit-${s.id}-${idx}`;
+    const card = document.createElement('div');
+    card.className = 'phrase-card';
+    card.innerHTML = `
+      <div class="en-text">${escapeHtml(ex.en)}</div>
+      <div class="ko-text">${escapeHtml(ex.ko)}</div>
+      <div class="line-actions" id="actions-${key}"></div>
+    `;
+    list.appendChild(card);
+    renderPhraseActions(key, ex.en);
+  });
+}
+
+/* ============ RENDER: VIDEO DETAIL ============ */
+function renderVideoDetail(videoId, source){
+  const v = source === 'custom'
+    ? customVideos.find(x => x.id === videoId)
+    : REAL_VIDEOS.find(x => x.id === videoId);
+  if(!v){ renderVideoHome(); return; }
+  const isCustom = source === 'custom';
+  const app = document.getElementById('app');
+  const backTarget = currentTopic ? (() => renderDialogue(currentTopic)) : renderVideoHome;
+
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="videoBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">🎬 실전 영상</div>
+        <div class="topbar-sub">${escapeHtml(isCustom ? v.title : v.titleKo)}</div>
+      </div>
+      ${isCustom ? `<button class="back-btn" id="videoDelBtn" title="삭제">🗑</button>` : ''}
+    </div>
+    <div class="video-detail-scroll">
+      <div class="video-frame-wrap" id="videoThumbClick" style="cursor:pointer; background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg'); background-size:cover; background-position:center; position:relative;">
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.22);">
+          <span style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;font-size:22px;padding-left:4px;">▶</span>
+        </div>
+      </div>
+      <div class="video-meta">
+        ${isCustom ? '' : `<div class="video-meta-channel">${escapeHtml(v.channel)}</div>`}
+        <div class="video-meta-title">${escapeHtml(isCustom ? v.title : v.titleEn)}</div>
+      </div>
+      ${!isCustom ? `
+        <div class="note-card">
+          <h4>👀 이렇게 들어보세요</h4>
+          ${v.notes.map(n => `<p>${n}</p>`).join('')}
+        </div>
+      ` : ''}
+      <button class="yt-open-btn" id="ytOpenBtn">▶ YouTube에서 보기</button>
+      ${!isCustom ? `<div class="video-disclaimer">이 영상은 ${escapeHtml(v.channel)} 채널의 저작물이며, 위 버튼을 누르면 YouTube에서 재생됩니다. 설명과 학습 포인트는 저희가 직접 작성한 내용이에요.</div>` : ''}
+    </div>
+  `;
+  document.getElementById('videoBackBtn').onclick = backTarget;
+  const openYt = () => window.open(`https://www.youtube.com/watch?v=${v.videoId}`, '_blank');
+  document.getElementById('ytOpenBtn').onclick = openYt;
+  document.getElementById('videoThumbClick').onclick = openYt;
+  if(isCustom){
+    document.getElementById('videoDelBtn').onclick = () => {
+      if(!confirm('이 영상을 삭제할까요?')) return;
+      customVideos = customVideos.filter(x => x.id !== videoId);
+      saveCustomVideos();
+      renderVideoHome();
+    };
+  }
+}
+
+/* ============ RENDER: VIDEO HOME (실전 동영상 menu) ============ */
+function renderVideoHome(){
+  currentTopic = null;
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" id="videoHomeBackBtn">←</button>
+      <div style="flex:1">
+        <div class="topbar-title">🎬 실전 동영상</div>
+        <div class="topbar-sub">유튜브 링크를 등록하고 바로 볼 수 있어요</div>
+      </div>
+    </div>
+    <button class="add-phrase-btn" id="addVideoBtn" style="background:#FF0000;">➕ 동영상 등록하기</button>
+    ${customVideos.length ? `
+      <div class="section-head">
+        <div class="section-title">📌 내가 등록한 영상</div>
+        <div class="section-sub">${customVideos.length}개</div>
+      </div>
+      <div class="video-scroll" id="customVideoScroll"></div>
+    ` : ''}
+    <div class="section-head">
+      <div class="section-title">📚 상황별 추천 영상</div>
+      <div class="section-sub">${REAL_VIDEOS.length}개</div>
+    </div>
+    <div class="video-scroll" id="builtinVideoScroll"></div>
+  `;
+  document.getElementById('videoHomeBackBtn').onclick = renderHome;
+  document.getElementById('addVideoBtn').onclick = renderAddVideoForm;
+
+  if(customVideos.length){
+    const cScroll = document.getElementById('customVideoScroll');
+    customVideos.forEach(v => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.innerHTML = `
+        <div class="video-thumb" style="background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg')">
+          <div class="video-play"><span>▶</span></div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">${escapeHtml(v.title)}</div>
+        </div>
+      `;
+      card.onclick = () => renderVideoDetail(v.id, 'custom');
+      cScroll.appendChild(card);
+    });
+  }
+
+  const bScroll = document.getElementById('builtinVideoScroll');
   REAL_VIDEOS.forEach(v => {
     const card = document.createElement('div');
     card.className = 'video-card';
@@ -1501,47 +1791,45 @@ function renderTopicList(){
         <div class="video-channel">${v.channel}</div>
       </div>
     `;
-    card.onclick = () => renderVideoDetail(v.id);
-    vScroll.appendChild(card);
+    card.onclick = () => renderVideoDetail(v.id, 'builtin');
+    bScroll.appendChild(card);
   });
 }
 
-/* ============ RENDER: VIDEO DETAIL ============ */
-function renderVideoDetail(videoRealId){
-  const v = REAL_VIDEOS.find(x => x.id === videoRealId);
+/* ============ RENDER: ADD VIDEO FORM ============ */
+function renderAddVideoForm(){
   const app = document.getElementById('app');
-  const backTarget = currentTopic ? (() => renderDialogue(currentTopic)) : renderTopicList;
-
   app.innerHTML = `
     <div class="topbar">
-      <button class="back-btn" id="videoBackBtn">←</button>
+      <button class="back-btn" id="addVideoBackBtn">←</button>
       <div style="flex:1">
-        <div class="topbar-title">🎬 실전 영상</div>
-        <div class="topbar-sub">${v.titleKo}</div>
+        <div class="topbar-title">➕ 동영상 등록하기</div>
+        <div class="topbar-sub">유튜브 링크를 붙여넣어주세요</div>
       </div>
     </div>
-    <div class="video-detail-scroll">
-      <div class="video-frame-wrap" id="videoThumbClick" style="cursor:pointer; background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg'); background-size:cover; background-position:center; position:relative;">
-        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.22);">
-          <span style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;font-size:22px;padding-left:4px;">▶</span>
-        </div>
+    <div style="padding-top:18px;">
+      <div class="form-group">
+        <label class="form-label">제목 *</label>
+        <input class="form-input" id="videoTitleInput" placeholder="예: 카페에서 주문하기 실전 영상" />
       </div>
-      <div class="video-meta">
-        <div class="video-meta-channel">${v.channel}</div>
-        <div class="video-meta-title">${v.titleEn}</div>
+      <div class="form-group">
+        <label class="form-label">유튜브 링크 *</label>
+        <input class="form-input" id="videoUrlInput" placeholder="https://youtu.be/... 또는 https://www.youtube.com/watch?v=..." />
       </div>
-      <div class="note-card">
-        <h4>👀 이렇게 들어보세요</h4>
-        ${v.notes.map(n => `<p>${n}</p>`).join('')}
-      </div>
-      <button class="yt-open-btn" id="ytOpenBtn">▶ YouTube에서 보기</button>
-      <div class="video-disclaimer">이 영상은 ${v.channel} 채널의 저작물이며, 위 버튼을 누르면 YouTube에서 재생됩니다. 설명과 학습 포인트는 저희가 직접 작성한 내용이에요.</div>
+      <button class="form-save-btn" id="saveVideoBtn">저장하기</button>
     </div>
   `;
-  document.getElementById('videoBackBtn').onclick = backTarget;
-  const openYt = () => window.open(`https://www.youtube.com/watch?v=${v.videoId}`, '_blank');
-  document.getElementById('ytOpenBtn').onclick = openYt;
-  document.getElementById('videoThumbClick').onclick = openYt;
+  document.getElementById('addVideoBackBtn').onclick = renderVideoHome;
+  document.getElementById('saveVideoBtn').onclick = async () => {
+    const title = document.getElementById('videoTitleInput').value.trim();
+    const url = document.getElementById('videoUrlInput').value.trim();
+    if(!title || !url){ showToast('제목과 링크를 모두 입력해주세요.'); return; }
+    const videoId = parseYouTubeId(url);
+    if(!videoId){ showToast('유튜브 링크를 확인해주세요.'); return; }
+    customVideos.push({ id: Date.now().toString(), title, videoId });
+    await saveCustomVideos();
+    renderVideoHome();
+  };
 }
 
 /* ============ RENDER: DIALOGUE ============ */
@@ -1575,7 +1863,7 @@ function renderDialogue(topicId){
   document.getElementById('backBtn').onclick = renderTopicList;
   const jumpEl = document.getElementById('jumpToVideo');
   if(jumpEl && linkedVideo){
-    jumpEl.onclick = () => renderVideoDetail(linkedVideo.id);
+    jumpEl.onclick = () => renderVideoDetail(linkedVideo.id, 'builtin');
   }
   renderDialogueBody(topic);
 }
@@ -1615,26 +1903,19 @@ function renderLineActions(key, topicId, idx, line){
   const wrap = document.getElementById(`actions-${key}`);
   const hasRec = !!recordings[key];
   wrap.innerHTML = `
-    <button class="act-btn act-listen" data-action="listen">🔊 듣기</button>
-    <button class="act-btn act-record" data-action="record">🎤 녹음</button>
-    <div class="wave" id="wave-${key}">
-      <div class="wave-bar" style="height:4px"></div>
-      <div class="wave-bar" style="height:8px"></div>
-      <div class="wave-bar" style="height:5px"></div>
-      <div class="wave-bar" style="height:10px"></div>
-    </div>
-    <button class="act-btn act-play" data-action="play" ${hasRec ? '' : 'disabled'}>▶ 내 목소리</button>
-    <button class="act-btn act-compare" data-action="compare" ${hasRec ? '' : 'disabled'}>🔁 비교하기</button>
+    <button class="mini-btn mini-listen" data-action="listen" title="듣기">🔊</button>
+    <button class="mini-btn mini-record" data-action="record" title="녹음">🎤</button>
+    <button class="mini-btn mini-play" data-action="play" title="내 목소리" ${hasRec ? '' : 'disabled'}>▶</button>
+    <button class="mini-btn mini-compare" data-action="compare" title="비교하기" ${hasRec ? '' : 'disabled'}>🔁</button>
   `;
   const listenBtn = wrap.querySelector('[data-action="listen"]');
   const recordBtn = wrap.querySelector('[data-action="record"]');
   const playBtn = wrap.querySelector('[data-action="play"]');
   const compareBtn = wrap.querySelector('[data-action="compare"]');
-  const waveEl = document.getElementById(`wave-${key}`);
 
   listenBtn.onclick = () => toggleListen(key, line.en, listenBtn);
   recordBtn.onclick = async () => {
-    await toggleRecord(key, recordBtn, waveEl, () => {
+    await toggleRecord(key, recordBtn, () => {
       markPracticed(topicId, idx);
       const topic = TOPICS.find(t => t.id === topicId);
       const doneCount = (progress[topicId] || []).length;
@@ -1668,26 +1949,19 @@ function renderPhraseActions(key, text){
   if(!wrap) return;
   const hasRec = !!recordings[key];
   wrap.innerHTML = `
-    <button class="act-btn act-listen" data-action="listen">🔊 듣기</button>
-    <button class="act-btn act-record" data-action="record">🎤 녹음</button>
-    <div class="wave" id="wave-${key}">
-      <div class="wave-bar" style="height:4px"></div>
-      <div class="wave-bar" style="height:8px"></div>
-      <div class="wave-bar" style="height:5px"></div>
-      <div class="wave-bar" style="height:10px"></div>
-    </div>
-    <button class="act-btn act-play" data-action="play" ${hasRec ? '' : 'disabled'}>▶ 내 목소리</button>
-    <button class="act-btn act-compare" data-action="compare" ${hasRec ? '' : 'disabled'}>🔁 비교하기</button>
+    <button class="mini-btn mini-listen" data-action="listen" title="듣기">🔊</button>
+    <button class="mini-btn mini-record" data-action="record" title="녹음">🎤</button>
+    <button class="mini-btn mini-play" data-action="play" title="내 목소리" ${hasRec ? '' : 'disabled'}>▶</button>
+    <button class="mini-btn mini-compare" data-action="compare" title="비교하기" ${hasRec ? '' : 'disabled'}>🔁</button>
   `;
   const listenBtn = wrap.querySelector('[data-action="listen"]');
   const recordBtn = wrap.querySelector('[data-action="record"]');
   const playBtn = wrap.querySelector('[data-action="play"]');
   const compareBtn = wrap.querySelector('[data-action="compare"]');
-  const waveEl = document.getElementById(`wave-${key}`);
 
   listenBtn.onclick = () => toggleListen(key, text, listenBtn);
   recordBtn.onclick = async () => {
-    await toggleRecord(key, recordBtn, waveEl, () => renderPhraseActions(key, text));
+    await toggleRecord(key, recordBtn, () => renderPhraseActions(key, text));
   };
   playBtn.onclick = () => playRecording(key);
   compareBtn.onclick = () => compareLine(key, text);
@@ -1713,16 +1987,9 @@ function renderPhraseHome(){
       </div>
       <div class="phrase-list" id="customPhraseList"></div>
     ` : ''}
-    ${customPatterns.length ? `
-      <div class="section-head">
-        <div class="section-title">🤖 내가 만든 표현 패턴</div>
-        <div class="section-sub">${customPatterns.length}개</div>
-      </div>
-      <div class="topic-list" id="customPatternList"></div>
-    ` : ''}
     <div class="section-head">
-      <div class="section-title">🗂 자주 쓰는 표현 패턴</div>
-      <div class="section-sub">${PHRASE_CATEGORIES.length}개</div>
+      <div class="section-title">🗂 표현 패턴</div>
+      <div class="section-sub">${PHRASE_CATEGORIES.length + customPatterns.length}개</div>
     </div>
     <div class="topic-list" id="patternList"></div>
   `;
@@ -1747,37 +2014,32 @@ function renderPhraseHome(){
     });
   }
 
-  if(customPatterns.length){
-    const cpList = document.getElementById('customPatternList');
-    customPatterns.forEach(cp => {
-      const card = document.createElement('div');
-      card.className = 'topic-card';
-      card.innerHTML = `
-        <div class="topic-icon" style="background:var(--gold-soft)">${cp.icon || '🤖'}</div>
-        <div class="topic-info">
-          <div class="topic-title-en">${escapeHtml(cp.pattern)}</div>
-          <div class="topic-title-ko">${escapeHtml(cp.titleKo)}</div>
-        </div>
-        <div class="chev">›</div>
-      `;
-      card.onclick = () => renderPatternDetail(cp, true);
-      cpList.appendChild(card);
-    });
-  }
-
   const patternList = document.getElementById('patternList');
-  PHRASE_CATEGORIES.forEach(cat => {
+  const builtIn = PHRASE_CATEGORIES.map(c => ({ ...c, _kind:'builtin' }));
+  const custom = customPatterns.map(c => ({ ...c, _kind:'custom' }));
+  const merged = sortByRating([...builtIn, ...custom], patternRatings);
+
+  merged.forEach(cat => {
+    const isCustom = cat._kind === 'custom';
     const card = document.createElement('div');
     card.className = 'topic-card';
     card.innerHTML = `
-      <div class="topic-icon" style="background:${cat.color}">${cat.icon}</div>
+      <div class="topic-icon" style="background:${cat.color || 'var(--gold-soft)'}">${cat.icon}</div>
       <div class="topic-info">
-        <div class="topic-title-en">${cat.pattern}</div>
-        <div class="topic-title-ko">${cat.titleKo}</div>
+        <div class="topic-title-en">${escapeHtml(cat.pattern)}</div>
+        <div class="topic-title-ko">${escapeHtml(cat.titleKo)}</div>
       </div>
-      <div class="chev">›</div>
     `;
-    card.onclick = () => renderPatternDetail(cat, false);
+    const ratingWrap = renderRatingGroup(cat.id, patternRatings, async () => {
+      await savePatternRatings();
+      renderPhraseHome();
+    });
+    card.appendChild(ratingWrap);
+    const chev = document.createElement('div');
+    chev.className = 'chev';
+    chev.textContent = '›';
+    card.appendChild(chev);
+    card.onclick = () => renderPatternDetail(cat, isCustom);
     patternList.appendChild(card);
   });
 }
@@ -1801,7 +2063,9 @@ function renderPatternDetail(pattern, isCustom){
     document.getElementById('patternDelBtn').onclick = () => {
       if(!confirm('이 패턴을 삭제할까요?')) return;
       customPatterns = customPatterns.filter(p => p.id !== pattern.id);
+      delete patternRatings[pattern.id];
       saveCustomPatterns();
+      savePatternRatings();
       renderPhraseHome();
     };
   }
@@ -2029,6 +2293,9 @@ function deleteCustomParagraph(id){
   await loadCustomPhrases();
   await loadCustomParagraphs();
   await loadCustomPatterns();
+  await loadCustomVideos();
+  await loadCustomSituations();
+  await loadRatings();
   renderHome();
 })();
 </script>
