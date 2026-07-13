@@ -97,7 +97,7 @@
     display:flex; align-items:center; justify-content:center; font-size:16px;
   }
   .topic-info{ flex:1; min-width:0; }
-  .topic-title-en{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:13px; }
+  .topic-title-en{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15.5px; }
   .topic-title-ko{ font-size:12px; color:var(--ink-soft); margin-top:1px; }
   .topic-progress{
     display:flex; align-items:center; gap:5px; margin-top:5px;
@@ -254,6 +254,25 @@
   .video-body{ padding:10px 12px 12px; }
   .video-title{ font-size:12.5px; font-weight:700; line-height:1.35; }
   .video-channel{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
+
+  .view-toggle{ display:flex; gap:6px; padding: 6px 20px 2px; }
+  .view-toggle-btn{
+    flex:1; border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft);
+    border-radius:20px; padding:7px 10px; font-size:12.5px; font-weight:700; cursor:pointer;
+    font-family:'Work Sans', sans-serif;
+  }
+  .view-toggle-btn.active{ background:var(--ink); color:#EFEFE8; border-color:var(--ink); }
+
+  .video-list{ padding: 4px 20px 8px; display:flex; flex-direction:column; }
+  .video-list-item{
+    padding:12px 2px; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:8px; cursor:pointer;
+  }
+  .video-list-item:last-child{ border-bottom:none; }
+  .video-list-title{
+    flex:1; font-size:14px; font-weight:600; color:var(--teal);
+    text-decoration:underline; text-underline-offset:2px; line-height:1.4;
+  }
 
   /* ---------- Video detail screen ---------- */
   .video-detail-scroll{ flex:1; overflow-y:auto; padding-bottom: calc(20px + var(--safe-b)); }
@@ -799,6 +818,25 @@ const TOPICS = [
       {sp:'B', en:"That's really common. Let's start by tracking your expenses for a month.", ko:"정말 흔한 일이에요. 우선 한 달간 지출을 추적해보는 것부터 시작해볼까요."},
       {sp:'A', en:"That sounds manageable. What should I focus on first?", ko:"그 정도는 할 수 있을 것 같아요. 뭐부터 신경 쓰면 좋을까요?"},
       {sp:'B', en:"Let's identify your biggest non-essential expenses first.", ko:"먼저 가장 큰 비필수 지출부터 파악해봅시다."}
+    ]
+  },
+  {
+    id:'businessmeeting', icon:'💼', color:'#EAF0FB',
+    titleEn:'Starting and Closing a Business Meeting', titleKo:'비즈니스 미팅 시작부터 마무리까지',
+    roleA:'HOST', roleB:'PARTICIPANT',
+    lines:[
+      {sp:'A', en:"Good morning, everyone. Thanks for joining, let's go ahead and get started.", ko:"안녕하세요, 여러분. 참석해주셔서 감사합니다, 바로 시작하겠습니다."},
+      {sp:'B', en:"Morning. Looking forward to today's discussion.", ko:"안녕하세요. 오늘 논의가 기대되네요."},
+      {sp:'A', en:"Great. Today we'll cover the Q3 budget and the new marketing plan.", ko:"좋습니다. 오늘은 3분기 예산과 새 마케팅 계획을 다룰 예정이에요.", tip:"“go ahead and get started”는 “바로 시작하다”라는 뜻으로 회의를 여는 자연스러운 표현이에요."},
+      {sp:'B', en:"Sounds good. Should we start with the budget first?", ko:"좋습니다. 예산부터 먼저 시작할까요?"},
+      {sp:'A', en:"Yes, let's dive right in. Sarah, could you walk us through the numbers?", ko:"네, 바로 들어가시죠. 사라, 수치 좀 설명해주시겠어요?", tip:"“walk us through ~”는 “~을 차근차근 설명해주다”라는 뜻으로 회의에서 정말 자주 쓰여요."},
+      {sp:'B', en:"Sure. Overall we're tracking about 10% under budget this quarter.", ko:"네. 전체적으로 이번 분기 예산보다 10% 정도 절감되고 있어요."},
+      {sp:'A', en:"That's great news. Let's move on to the marketing plan next.", ko:"좋은 소식이네요. 다음으로 마케팅 계획으로 넘어가시죠."},
+      {sp:'B', en:"Right, I'll share my screen and walk through the proposal.", ko:"네, 화면 공유하고 제안서를 설명드릴게요."},
+      {sp:'A', en:"Perfect. Let's wrap up by recapping today's action items.", ko:"완벽하네요. 오늘 실행 항목을 정리하며 마무리할게요.", tip:"“action items”는 회의 후 “실행해야 할 항목들”을 뜻하는 표현이에요."},
+      {sp:'B', en:"Sounds good. I'll send a summary email after this call.", ko:"좋아요. 통화 끝나고 요약 메일 보내드릴게요."},
+      {sp:'A', en:"Thanks, everyone. This was a productive meeting.", ko:"감사합니다, 여러분. 생산적인 미팅이었네요."},
+      {sp:'B', en:"Agreed. Thanks for having me. Talk soon!", ko:"동의해요. 불러주셔서 감사합니다. 곧 또 얘기해요!"}
     ]
   }
 ];
@@ -1731,6 +1769,8 @@ function renderVideoDetail(videoId, source){
 }
 
 /* ============ RENDER: VIDEO HOME (실전 동영상 menu) ============ */
+let videoViewMode = 'card'; // 'card' or 'list'
+
 function renderVideoHome(){
   currentTopic = null;
   const app = document.getElementById('app');
@@ -1743,56 +1783,76 @@ function renderVideoHome(){
       </div>
     </div>
     <button class="add-phrase-btn" id="addVideoBtn" style="background:#FF0000;">➕ 동영상 등록하기</button>
+    <div class="view-toggle">
+      <button class="view-toggle-btn ${videoViewMode==='card' ? 'active' : ''}" id="cardViewBtn">🖼 카드보기</button>
+      <button class="view-toggle-btn ${videoViewMode==='list' ? 'active' : ''}" id="listViewBtn">📃 목록보기</button>
+    </div>
     ${customVideos.length ? `
       <div class="section-head">
         <div class="section-title">📌 내가 등록한 영상</div>
         <div class="section-sub">${customVideos.length}개</div>
       </div>
-      <div class="video-scroll" id="customVideoScroll"></div>
+      <div id="customVideoContainer"></div>
     ` : ''}
     <div class="section-head">
       <div class="section-title">📚 상황별 추천 영상</div>
       <div class="section-sub">${REAL_VIDEOS.length}개</div>
     </div>
-    <div class="video-scroll" id="builtinVideoScroll"></div>
+    <div id="builtinVideoContainer"></div>
   `;
   document.getElementById('videoHomeBackBtn').onclick = renderHome;
   document.getElementById('addVideoBtn').onclick = renderAddVideoForm;
+  document.getElementById('cardViewBtn').onclick = () => { videoViewMode = 'card'; renderVideoHome(); };
+  document.getElementById('listViewBtn').onclick = () => { videoViewMode = 'list'; renderVideoHome(); };
+
+  const isList = videoViewMode === 'list';
 
   if(customVideos.length){
-    const cScroll = document.getElementById('customVideoScroll');
+    const cContainer = document.getElementById('customVideoContainer');
+    cContainer.className = isList ? 'video-list' : 'video-scroll';
     customVideos.forEach(v => {
-      const card = document.createElement('div');
-      card.className = 'video-card';
-      card.innerHTML = `
-        <div class="video-thumb" style="background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg')">
-          <div class="video-play"><span>▶</span></div>
-        </div>
-        <div class="video-body">
-          <div class="video-title">${escapeHtml(v.title)}</div>
-        </div>
-      `;
-      card.onclick = () => renderVideoDetail(v.id, 'custom');
-      cScroll.appendChild(card);
+      const item = document.createElement('div');
+      if(isList){
+        item.className = 'video-list-item';
+        item.innerHTML = `<span class="video-list-title">▶ ${escapeHtml(v.title)}</span>`;
+      } else {
+        item.className = 'video-card';
+        item.innerHTML = `
+          <div class="video-thumb" style="background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg')">
+            <div class="video-play"><span>▶</span></div>
+          </div>
+          <div class="video-body">
+            <div class="video-title">${escapeHtml(v.title)}</div>
+          </div>
+        `;
+      }
+      item.onclick = () => renderVideoDetail(v.id, 'custom');
+      cContainer.appendChild(item);
     });
   }
 
-  const bScroll = document.getElementById('builtinVideoScroll');
+  const bContainer = document.getElementById('builtinVideoContainer');
+  bContainer.className = isList ? 'video-list' : 'video-scroll';
   REAL_VIDEOS.forEach(v => {
-    const card = document.createElement('div');
-    card.className = 'video-card';
-    card.innerHTML = `
-      <div class="video-thumb" style="background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg')">
-        <div class="video-badge">${v.badge}</div>
-        <div class="video-play"><span>▶</span></div>
-      </div>
-      <div class="video-body">
-        <div class="video-title">${v.titleKo}</div>
-        <div class="video-channel">${v.channel}</div>
-      </div>
-    `;
-    card.onclick = () => renderVideoDetail(v.id, 'builtin');
-    bScroll.appendChild(card);
+    const item = document.createElement('div');
+    if(isList){
+      item.className = 'video-list-item';
+      item.innerHTML = `<span class="video-list-title">▶ ${escapeHtml(v.titleKo)}</span>`;
+    } else {
+      item.className = 'video-card';
+      item.innerHTML = `
+        <div class="video-thumb" style="background-image:url('https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg')">
+          <div class="video-badge">${v.badge}</div>
+          <div class="video-play"><span>▶</span></div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">${v.titleKo}</div>
+          <div class="video-channel">${v.channel}</div>
+        </div>
+      `;
+    }
+    item.onclick = () => renderVideoDetail(v.id, 'builtin');
+    bContainer.appendChild(item);
   });
 }
 
