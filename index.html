@@ -1510,6 +1510,43 @@ document.getElementById('micModalOverlay').onclick = (e) => {
 };
 
 /* ============ RENDER: HOME ============ */
+/* ============ NAVIGATION (History API — supports phone back button) ============
+   Every "forward" navigation (tapping into a submenu/detail/form) goes through
+   goTo(), which renders the screen AND pushes a history entry. Every "back"
+   action (back arrow, cancel, or returning after a save/delete) calls
+   history.back() instead of directly re-rendering the parent screen — this
+   makes the in-app back arrow and the phone's hardware/gesture back button
+   behave identically. */
+const SCREEN_FUNCS = {
+  home: renderHome,
+  topicList: renderTopicList,
+  dialogue: renderDialogue,
+  situationDetail: renderSituationDetail,
+  addSituationForm: renderAddSituationForm,
+  phraseHome: renderPhraseHome,
+  patternDetail: renderPatternDetail,
+  pastePatternForm: renderPastePatternForm,
+  videoHome: renderVideoHome,
+  videoDetail: renderVideoDetail,
+  addVideoForm: renderAddVideoForm,
+  paragraphHome: renderParagraphHome,
+  paragraphDetail: renderParagraphDetail,
+  addParagraphForm: renderAddParagraphForm
+};
+
+function goTo(name, ...args){
+  SCREEN_FUNCS[name](...args);
+  history.pushState({ name, args }, '');
+}
+
+window.addEventListener('popstate', (e) => {
+  if(e.state && e.state.name && SCREEN_FUNCS[e.state.name]){
+    SCREEN_FUNCS[e.state.name](...(e.state.args || []));
+  } else {
+    renderHome();
+  }
+});
+
 function renderHome(){
   currentTopic = null;
   const app = document.getElementById('app');
@@ -1565,10 +1602,10 @@ function renderHome(){
       </div>
     </div>
   `;
-  document.getElementById('situationModeCard').onclick = renderTopicList;
-  document.getElementById('phraseModeCard').onclick = renderPhraseHome;
-  document.getElementById('videoModeCard').onclick = renderVideoHome;
-  document.getElementById('paragraphModeCard').onclick = renderParagraphHome;
+  document.getElementById('situationModeCard').onclick = () => goTo('topicList');
+  document.getElementById('phraseModeCard').onclick = () => goTo('phraseHome');
+  document.getElementById('videoModeCard').onclick = () => goTo('videoHome');
+  document.getElementById('paragraphModeCard').onclick = () => goTo('paragraphHome');
 }
 
 /* ============ RENDER: TOPIC LIST (situational practice) ============ */
@@ -1587,8 +1624,8 @@ function renderTopicList(){
     <button class="add-phrase-btn" id="addSituationBtn">➕ 상황 등록하기</button>
     <div class="topic-list" id="topicList"></div>
   `;
-  document.getElementById('topicListBackBtn').onclick = renderHome;
-  document.getElementById('addSituationBtn').onclick = renderAddSituationForm;
+  document.getElementById('topicListBackBtn').onclick = () => history.back();
+  document.getElementById('addSituationBtn').onclick = () => goTo('addSituationForm');
 
   const list = document.getElementById('topicList');
   const builtIn = TOPICS.map(t => ({ ...t, _kind:'builtin' }));
@@ -1622,19 +1659,20 @@ function renderTopicList(){
     chev.className = 'chev';
     chev.textContent = '›';
     card.appendChild(chev);
-    card.onclick = () => isCustom ? renderSituationDetail(t.id) : renderDialogue(t.id);
+    card.onclick = () => isCustom ? goTo('situationDetail', t.id) : goTo('dialogue', t.id);
     list.appendChild(card);
   });
 }
 
 /* ============ RENDER: ADD SITUATION (paste format, same as phrase pattern) ============ */
-function renderAddSituationForm(){
+function renderAddSituationForm(editId){
+  const editing = editId ? customSituations.find(s => s.id === editId) : null;
   const app = document.getElementById('app');
   app.innerHTML = `
     <div class="topbar">
       <button class="back-btn" id="addSitBackBtn">←</button>
       <div style="flex:1">
-        <div class="topbar-title">➕ 상황 등록하기</div>
+        <div class="topbar-title">${editing ? '✏️ 상황 수정하기' : '➕ 상황 등록하기'}</div>
         <div class="topbar-sub">표현 연습과 같은 형식으로 붙여넣으면 돼요</div>
       </div>
     </div>
@@ -1646,14 +1684,14 @@ function renderAddSituationForm(){
 1. Hi, I have a 3 o'clock appointment with Dr. Lee.
 안녕하세요, 3시에 이 선생님과 예약이 있어요.
 2. Could you fill out this form first?
-이 양식 먼저 작성해주시겠어요?"></textarea>
+이 양식 먼저 작성해주시겠어요?">${editing ? escapeHtml(patternToText(editing.titleEn, editing.titleKo, editing.examples)) : ''}</textarea>
       </div>
       <div class="empty-hint">형식: 1번째 줄 = 상황 제목(영어) · 2번째 줄 = 한글 제목 · 그 다음부터 "번호. 영어문장" 한 줄 + 한글 번역 한 줄을 예문 개수만큼 반복</div>
-      <button class="form-save-btn" id="sitSubmitBtn">추가하기</button>
+      <button class="form-save-btn" id="sitSubmitBtn">${editing ? '수정 저장하기' : '추가하기'}</button>
       <div id="sitPreviewArea"></div>
     </div>
   `;
-  document.getElementById('addSitBackBtn').onclick = renderTopicList;
+  document.getElementById('addSitBackBtn').onclick = () => history.back();
   document.getElementById('sitSubmitBtn').onclick = async () => {
     const raw = document.getElementById('sitPasteInput').value;
     const parsed = parsePatternText(raw);
@@ -1662,16 +1700,22 @@ function renderAddSituationForm(){
       previewArea.innerHTML = `<div class="empty-hint">⚠️ 형식을 확인해주세요.</div>`;
       return;
     }
-    customSituations.push({
-      id: Date.now().toString(),
-      icon: '📍',
-      color: 'var(--gold-soft)',
-      titleEn: parsed.pattern,
-      titleKo: parsed.titleKo,
-      examples: parsed.examples
-    });
+    if(editing){
+      editing.titleEn = parsed.pattern;
+      editing.titleKo = parsed.titleKo;
+      editing.examples = parsed.examples;
+    } else {
+      customSituations.push({
+        id: Date.now().toString(),
+        icon: '📍',
+        color: 'var(--gold-soft)',
+        titleEn: parsed.pattern,
+        titleKo: parsed.titleKo,
+        examples: parsed.examples
+      });
+    }
     await saveCustomSituations();
-    renderTopicList();
+    history.back();
   };
 }
 
@@ -1687,18 +1731,20 @@ function renderSituationDetail(id){
         <div class="topbar-title">📍 ${escapeHtml(s.titleEn)}</div>
         <div class="topbar-sub">${escapeHtml(s.titleKo)}</div>
       </div>
+      <button class="back-btn" id="sitDetailEditBtn" title="수정" style="margin-right:6px;">✏️</button>
       <button class="back-btn" id="sitDetailDelBtn" title="삭제">🗑</button>
     </div>
     <div class="phrase-list" id="sitExampleList" style="padding-top:14px;"></div>
   `;
-  document.getElementById('sitDetailBackBtn').onclick = renderTopicList;
+  document.getElementById('sitDetailBackBtn').onclick = () => history.back();
+  document.getElementById('sitDetailEditBtn').onclick = () => goTo('addSituationForm', s.id);
   document.getElementById('sitDetailDelBtn').onclick = () => {
     if(!confirm('이 상황을 삭제할까요?')) return;
     customSituations = customSituations.filter(x => x.id !== id);
     delete topicRatings[id];
     saveCustomSituations();
     saveTopicRatings();
-    renderTopicList();
+    history.back();
   };
   const list = document.getElementById('sitExampleList');
   s.examples.forEach((ex, idx) => {
@@ -1723,7 +1769,6 @@ function renderVideoDetail(videoId, source){
   if(!v){ renderVideoHome(); return; }
   const isCustom = source === 'custom';
   const app = document.getElementById('app');
-  const backTarget = currentTopic ? (() => renderDialogue(currentTopic)) : renderVideoHome;
 
   app.innerHTML = `
     <div class="topbar">
@@ -1754,7 +1799,7 @@ function renderVideoDetail(videoId, source){
       ${!isCustom ? `<div class="video-disclaimer">이 영상은 ${escapeHtml(v.channel)} 채널의 저작물이며, 위 버튼을 누르면 YouTube에서 재생됩니다. 설명과 학습 포인트는 저희가 직접 작성한 내용이에요.</div>` : ''}
     </div>
   `;
-  document.getElementById('videoBackBtn').onclick = backTarget;
+  document.getElementById('videoBackBtn').onclick = () => history.back();
   const openYt = () => window.open(`https://www.youtube.com/watch?v=${v.videoId}`, '_blank');
   document.getElementById('ytOpenBtn').onclick = openYt;
   document.getElementById('videoThumbClick').onclick = openYt;
@@ -1763,7 +1808,7 @@ function renderVideoDetail(videoId, source){
       if(!confirm('이 영상을 삭제할까요?')) return;
       customVideos = customVideos.filter(x => x.id !== videoId);
       saveCustomVideos();
-      renderVideoHome();
+      history.back();
     };
   }
 }
@@ -1800,8 +1845,8 @@ function renderVideoHome(){
     </div>
     <div id="builtinVideoContainer"></div>
   `;
-  document.getElementById('videoHomeBackBtn').onclick = renderHome;
-  document.getElementById('addVideoBtn').onclick = renderAddVideoForm;
+  document.getElementById('videoHomeBackBtn').onclick = () => history.back();
+  document.getElementById('addVideoBtn').onclick = () => goTo('addVideoForm');
   document.getElementById('cardViewBtn').onclick = () => { videoViewMode = 'card'; renderVideoHome(); };
   document.getElementById('listViewBtn').onclick = () => { videoViewMode = 'list'; renderVideoHome(); };
 
@@ -1826,7 +1871,7 @@ function renderVideoHome(){
           </div>
         `;
       }
-      item.onclick = () => renderVideoDetail(v.id, 'custom');
+      item.onclick = () => goTo('videoDetail', v.id, 'custom');
       cContainer.appendChild(item);
     });
   }
@@ -1851,7 +1896,7 @@ function renderVideoHome(){
         </div>
       `;
     }
-    item.onclick = () => renderVideoDetail(v.id, 'builtin');
+    item.onclick = () => goTo('videoDetail', v.id, 'builtin');
     bContainer.appendChild(item);
   });
 }
@@ -1879,7 +1924,7 @@ function renderAddVideoForm(){
       <button class="form-save-btn" id="saveVideoBtn">저장하기</button>
     </div>
   `;
-  document.getElementById('addVideoBackBtn').onclick = renderVideoHome;
+  document.getElementById('addVideoBackBtn').onclick = () => history.back();
   document.getElementById('saveVideoBtn').onclick = async () => {
     const title = document.getElementById('videoTitleInput').value.trim();
     const url = document.getElementById('videoUrlInput').value.trim();
@@ -1888,7 +1933,7 @@ function renderAddVideoForm(){
     if(!videoId){ showToast('유튜브 링크를 확인해주세요.'); return; }
     customVideos.push({ id: Date.now().toString(), title, videoId });
     await saveCustomVideos();
-    renderVideoHome();
+    history.back();
   };
 }
 
@@ -1920,10 +1965,10 @@ function renderDialogue(topicId){
       <div class="mic-note">🔊 듣기로 원어민 발음을 먼저 확인하고, 🎤 녹음 후 🔁 비교하기로 내 발음과 비교해보세요.</div>
     </div>
   `;
-  document.getElementById('backBtn').onclick = renderTopicList;
+  document.getElementById('backBtn').onclick = () => history.back();
   const jumpEl = document.getElementById('jumpToVideo');
   if(jumpEl && linkedVideo){
-    jumpEl.onclick = () => renderVideoDetail(linkedVideo.id, 'builtin');
+    jumpEl.onclick = () => goTo('videoDetail', linkedVideo.id, 'builtin');
   }
   renderDialogueBody(topic);
 }
@@ -2053,8 +2098,8 @@ function renderPhraseHome(){
     </div>
     <div class="topic-list" id="patternList"></div>
   `;
-  document.getElementById('phraseBackBtn').onclick = renderHome;
-  document.getElementById('pastePatternBtn').onclick = renderPastePatternForm;
+  document.getElementById('phraseBackBtn').onclick = () => history.back();
+  document.getElementById('pastePatternBtn').onclick = () => goTo('pastePatternForm');
 
   if(customPhrases.length){
     const list = document.getElementById('customPhraseList');
@@ -2099,13 +2144,15 @@ function renderPhraseHome(){
     chev.className = 'chev';
     chev.textContent = '›';
     card.appendChild(chev);
-    card.onclick = () => renderPatternDetail(cat, isCustom);
+    card.onclick = () => goTo('patternDetail', cat.id, isCustom);
     patternList.appendChild(card);
   });
 }
 
 /* ============ RENDER: PATTERN DETAIL (built-in or AI-generated) ============ */
-function renderPatternDetail(pattern, isCustom){
+function renderPatternDetail(id, isCustom){
+  const pattern = isCustom ? customPatterns.find(p => p.id === id) : PHRASE_CATEGORIES.find(p => p.id === id);
+  if(!pattern){ history.back(); return; }
   const app = document.getElementById('app');
   app.innerHTML = `
     <div class="topbar">
@@ -2114,19 +2161,20 @@ function renderPatternDetail(pattern, isCustom){
         <div class="topbar-title">${pattern.icon} ${escapeHtml(pattern.pattern)}</div>
         <div class="topbar-sub">${escapeHtml(pattern.titleKo)}</div>
       </div>
-      ${isCustom ? `<button class="back-btn" id="patternDelBtn" title="삭제">🗑</button>` : ''}
+      ${isCustom ? `<button class="back-btn" id="patternEditBtn" title="수정" style="margin-right:6px;">✏️</button><button class="back-btn" id="patternDelBtn" title="삭제">🗑</button>` : ''}
     </div>
     <div class="phrase-list" id="exampleList" style="padding-top:14px;"></div>
   `;
-  document.getElementById('catBackBtn').onclick = renderPhraseHome;
+  document.getElementById('catBackBtn').onclick = () => history.back();
   if(isCustom){
+    document.getElementById('patternEditBtn').onclick = () => goTo('pastePatternForm', pattern.id);
     document.getElementById('patternDelBtn').onclick = () => {
       if(!confirm('이 패턴을 삭제할까요?')) return;
       customPatterns = customPatterns.filter(p => p.id !== pattern.id);
       delete patternRatings[pattern.id];
       saveCustomPatterns();
       savePatternRatings();
-      renderPhraseHome();
+      history.back();
     };
   }
   const list = document.getElementById('exampleList');
@@ -2165,13 +2213,23 @@ function parsePatternText(raw){
   return { pattern, titleKo, examples };
 }
 
-function renderPastePatternForm(){
+function patternToText(titleLine, titleKo, examples){
+  const lines = [titleLine, titleKo];
+  examples.forEach((ex, i) => {
+    lines.push(`${i+1}. ${ex.en}`);
+    lines.push(ex.ko);
+  });
+  return lines.join('\n');
+}
+
+function renderPastePatternForm(editId){
+  const editing = editId ? customPatterns.find(p => p.id === editId) : null;
   const app = document.getElementById('app');
   app.innerHTML = `
     <div class="topbar">
       <button class="back-btn" id="pasteBackBtn">←</button>
       <div style="flex:1">
-        <div class="topbar-title">📋 텍스트로 패턴 추가하기</div>
+        <div class="topbar-title">${editing ? '✏️ 패턴 수정하기' : '📋 텍스트로 패턴 추가하기'}</div>
         <div class="topbar-sub">형식대로 붙여넣으면 바로 등록돼요 (API 불필요)</div>
       </div>
     </div>
@@ -2183,14 +2241,14 @@ function renderPastePatternForm(){
 1. I'm worried about my English pronunciation.
 내 영어 발음이 걱정스러워.
 2. I'm a little concerned about the deadline.
-마감일이 조금 우려돼."></textarea>
+마감일이 조금 우려돼.">${editing ? escapeHtml(patternToText(editing.pattern, editing.titleKo, editing.examples)) : ''}</textarea>
       </div>
       <div class="empty-hint">형식: 1번째 줄 = 영어 패턴 · 2번째 줄 = 한글 제목 · 그 다음부터 "번호. 영어문장" 한 줄 + 한글 번역 한 줄을 예문 개수만큼 반복</div>
-      <button class="form-save-btn" id="pasteSubmitBtn">추가하기</button>
+      <button class="form-save-btn" id="pasteSubmitBtn">${editing ? '수정 저장하기' : '추가하기'}</button>
       <div id="pastePreviewArea"></div>
     </div>
   `;
-  document.getElementById('pasteBackBtn').onclick = renderPhraseHome;
+  document.getElementById('pasteBackBtn').onclick = () => history.back();
   document.getElementById('pasteSubmitBtn').onclick = async () => {
     const raw = document.getElementById('pasteInput').value;
     const parsed = parsePatternText(raw);
@@ -2199,17 +2257,24 @@ function renderPastePatternForm(){
       previewArea.innerHTML = `<div class="empty-hint">⚠️ 형식을 확인해주세요. 첫 줄은 영어 패턴, 둘째 줄은 한글 제목, 그 다음 번호가 매겨진 영어 문장과 한글 번역이 필요해요.</div>`;
       return;
     }
-    customPatterns.push({
-      id: Date.now().toString(),
-      icon: '📋',
-      pattern: parsed.pattern,
-      titleKo: parsed.titleKo,
-      examples: parsed.examples
-    });
+    if(editing){
+      editing.pattern = parsed.pattern;
+      editing.titleKo = parsed.titleKo;
+      editing.examples = parsed.examples;
+    } else {
+      customPatterns.push({
+        id: Date.now().toString(),
+        icon: '📋',
+        pattern: parsed.pattern,
+        titleKo: parsed.titleKo,
+        examples: parsed.examples
+      });
+    }
     await saveCustomPatterns();
-    renderPhraseHome();
+    history.back();
   };
 }
+
 
 /* ============ RENDER: PARAGRAPH HOME ============ */
 function renderParagraphHome(){
@@ -2232,8 +2297,8 @@ function renderParagraphHome(){
       <div class="phrase-list" id="paraList"></div>
     ` : `<div class="empty-hint">아직 등록한 문장/문단이 없어요. 위 버튼으로 연습하고 싶은 내용을 추가해보세요.</div>`}
   `;
-  document.getElementById('paraBackBtn').onclick = renderHome;
-  document.getElementById('addParaBtn').onclick = renderAddParagraphForm;
+  document.getElementById('paraBackBtn').onclick = () => history.back();
+  document.getElementById('addParaBtn').onclick = () => goTo('addParagraphForm');
 
   if(customParagraphs.length){
     const list = document.getElementById('paraList');
@@ -2251,7 +2316,7 @@ function renderParagraphHome(){
       `;
       card.addEventListener('click', (e) => {
         if(e.target.closest('[data-del]')) return;
-        renderParagraphDetail(p.id);
+        goTo('paragraphDetail', p.id);
       });
       card.querySelector('[data-del]').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -2290,7 +2355,7 @@ function renderAddParagraphForm(editId){
       <button class="form-save-btn" id="saveParaBtn">${editing ? '수정 저장하기' : '저장하기'}</button>
     </div>
   `;
-  document.getElementById('addParaBackBtn').onclick = editing ? (() => renderParagraphDetail(editing.id)) : renderParagraphHome;
+  document.getElementById('addParaBackBtn').onclick = () => history.back();
   document.getElementById('saveParaBtn').onclick = async () => {
     const title = document.getElementById('paraTitleInput').value.trim();
     const text = document.getElementById('paraEnInput').value.trim();
@@ -2301,11 +2366,11 @@ function renderAddParagraphForm(editId){
       editing.text = text;
       editing.ko = ko;
       await saveCustomParagraphs();
-      renderParagraphDetail(editing.id);
+      history.back();
     } else {
       customParagraphs.push({ id: Date.now().toString(), title, text, ko });
       await saveCustomParagraphs();
-      renderParagraphHome();
+      history.back();
     }
   };
 }
@@ -2334,9 +2399,14 @@ function renderParagraphDetail(id){
       </div>
     </div>
   `;
-  document.getElementById('paraDetailBackBtn').onclick = renderParagraphHome;
-  document.getElementById('paraDetailEditBtn').onclick = () => renderAddParagraphForm(p.id);
-  document.getElementById('paraDetailDelBtn').onclick = () => deleteCustomParagraph(p.id);
+  document.getElementById('paraDetailBackBtn').onclick = () => history.back();
+  document.getElementById('paraDetailEditBtn').onclick = () => goTo('addParagraphForm', p.id);
+  document.getElementById('paraDetailDelBtn').onclick = () => {
+    if(!confirm('이 항목을 삭제할까요?')) return;
+    customParagraphs = customParagraphs.filter(x => x.id !== p.id);
+    saveCustomParagraphs();
+    history.back();
+  };
   renderPhraseActions(key, p.text);
 }
 
@@ -2357,6 +2427,7 @@ function deleteCustomParagraph(id){
   await loadCustomSituations();
   await loadRatings();
   renderHome();
+  history.replaceState({ name:'home', args:[] }, '');
 })();
 </script>
 </body>
