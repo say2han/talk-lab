@@ -1902,7 +1902,7 @@ function renderSituationDetail(id){
       <button class="back-btn" id="sitDetailEditBtn" title="수정" style="margin-right:6px;">✏️</button>
       <button class="back-btn" id="sitDetailDelBtn" title="삭제">🗑</button>
     </div>
-    <div class="phrase-list" id="sitExampleList" style="padding-top:14px;"></div>
+    <div class="dialogue-scroll" id="sitExampleList" style="padding:16px 14px 20px;"></div>
   `;
   document.getElementById('sitDetailBackBtn').onclick = () => history.back();
   document.getElementById('sitDetailEditBtn').onclick = () => goTo('addSituationForm', s.id);
@@ -1916,15 +1916,23 @@ function renderSituationDetail(id){
   };
   const list = document.getElementById('sitExampleList');
   s.examples.forEach((ex, idx) => {
+    const side = idx % 2 === 0 ? 'left' : 'right';
+    const role = idx % 2 === 0 ? 'A' : 'B';
     const key = `customsit-${s.id}-${idx}`;
-    const card = document.createElement('div');
-    card.className = 'phrase-card';
-    card.innerHTML = `
-      <div class="en-text">${escapeHtml(ex.en)}</div>
-      <div class="ko-text">${escapeHtml(ex.ko)}</div>
-      <div class="line-actions" id="actions-${key}"></div>
+
+    const row = document.createElement('div');
+    row.className = `line-row ${side}`;
+    row.innerHTML = `
+      <div class="speaker-label">${role}</div>
+      <div class="bubble-wrap">
+        <div class="bubble">
+          <div class="en-text">${escapeHtml(ex.en)}</div>
+          <div class="ko-text">${escapeHtml(ex.ko)}</div>
+          <div class="line-actions" id="actions-${key}"></div>
+        </div>
+      </div>
     `;
-    list.appendChild(card);
+    list.appendChild(row);
     renderPhraseActions(key, ex.en);
   });
 }
