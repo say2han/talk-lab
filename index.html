@@ -1184,6 +1184,7 @@ const PHRASE_CATEGORIES = [
 ];
 
 /* ============ STATE ============ */
+let currentUser = null;     // username string, set at the entry gate
 let progress = {};          // { topicId: [lineIndex, ...] }
 let currentTopic = null;
 let customPhrases = [];     // [{id, en, ko}]
@@ -1201,14 +1202,40 @@ let mediaStream = null;
 let enVoice = null;
 let speakingKey = null;
 
+/* ============ USER (multi-user support) ============
+   A lightweight, name-based "who's using this" identifier — no password,
+   just enough to keep each person's registered content separate when
+   several people share the same deployed app. The username itself is
+   always stored locally on the device (never user-scoped); every OTHER
+   storage key gets automatically prefixed with the current username. */
+const USERNAME_LOCAL_KEY = 'talklab-username';
+
+function loadUsernameLocal(){
+  try{ return localStorage.getItem(USERNAME_LOCAL_KEY); }catch(e){ return null; }
+}
+function saveUsernameLocal(name){
+  try{ localStorage.setItem(USERNAME_LOCAL_KEY, name); }catch(e){ /* ignore */ }
+}
+function sanitizeUsername(name){
+  return String(name).trim().slice(0, 24);
+}
+function userKey(key){
+  if(!currentUser) return key;
+  const safe = currentUser.toUpperCase().replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+  return `u-${safe}__${key}`;
+}
+
 /* ============ STORAGE ============
    Priority: (1) window.storage — Claude artifact only.
              (2) /api/data — cloud sync via Vercel serverless function +
                  Upstash Redis, works across devices when deployed on Vercel
                  with the storage integration configured.
              (3) localStorage — local fallback (offline, or cloud not set up
-                 yet), and also used to keep a fast local mirror. */
-async function storageGet(key){
+                 yet), and also used to keep a fast local mirror.
+   storageGet/storageSet are automatically namespaced per-user via userKey().
+   rawStorageGet/rawStorageSet operate on the exact key given (no user
+   prefix) — used for one-time migration of pre-multi-user data. */
+async function rawStorageGet(key){
   try{
     if(window.storage && window.storage.get){
       const r = await window.storage.get(key, false);
@@ -1227,7 +1254,7 @@ async function storageGet(key){
   }catch(e){ /* fall through, e.g. not deployed on Vercel / offline */ }
   try{ return localStorage.getItem(key); }catch(e){ return null; }
 }
-async function storageSet(key, value){
+async function rawStorageSet(key, value){
   try{
     if(window.storage && window.storage.set){
       await window.storage.set(key, value, false);
@@ -1243,8 +1270,40 @@ async function storageSet(key, value){
   }catch(e){ /* cloud unavailable, local save below still happens */ }
   try{ localStorage.setItem(key, value); }catch(e){ /* storage unavailable */ }
 }
+async function storageGet(rawKey){
+  return rawStorageGet(userKey(rawKey));
+}
+async function storageSet(rawKey, value){
+  return rawStorageSet(userKey(rawKey), value);
+}
+
+/* ============ ONE-TIME MIGRATION ============
+   Content registered before multi-user support existed was saved under
+   plain, unprefixed keys. Map all of it to the "SANGYOUNG" user so it shows
+   up under that name instead of being orphaned. Runs at most once (guarded
+   by a migration-done flag) regardless of which device/user opens the app
+   next, since the underlying storage is shared. */
+const LEGACY_STORAGE_KEYS = [
+  'practice-progress', 'custom-phrases', 'custom-paragraphs',
+  'custom-patterns', 'custom-videos', 'custom-situations',
+  'topic-ratings', 'pattern-ratings'
+];
+async function migrateLegacyDataToSangyoung(){
+  const flag = await rawStorageGet('__migrated-legacy-to-SANGYOUNG');
+  if(flag) return;
+  for(const key of LEGACY_STORAGE_KEYS){
+    try{
+      const legacyValue = await rawStorageGet(key);
+      if(legacyValue !== null && legacyValue !== undefined){
+        await rawStorageSet(`u-SANGYOUNG__${key}`, legacyValue);
+      }
+    }catch(e){ /* skip this key, continue migrating the rest */ }
+  }
+  await rawStorageSet('__migrated-legacy-to-SANGYOUNG', '1');
+}
 
 async function loadProgress(){
+  progress = {};
   try{
     const v = await storageGet('practice-progress');
     if(v){ progress = JSON.parse(v); }
@@ -1260,6 +1319,7 @@ function markPracticed(topicId, idx){
 }
 
 async function loadCustomPhrases(){
+  customPhrases = [];
   try{
     const v = await storageGet('custom-phrases');
     if(v){ customPhrases = JSON.parse(v); }
@@ -1270,6 +1330,7 @@ async function saveCustomPhrases(){
 }
 
 async function loadCustomParagraphs(){
+  customParagraphs = [];
   try{
     const v = await storageGet('custom-paragraphs');
     if(v){ customParagraphs = JSON.parse(v); }
@@ -1280,6 +1341,7 @@ async function saveCustomParagraphs(){
 }
 
 async function loadCustomPatterns(){
+  customPatterns = [];
   try{
     const v = await storageGet('custom-patterns');
     if(v){ customPatterns = JSON.parse(v); }
@@ -1290,6 +1352,7 @@ async function saveCustomPatterns(){
 }
 
 async function loadCustomVideos(){
+  customVideos = [];
   try{
     const v = await storageGet('custom-videos');
     if(v){ customVideos = JSON.parse(v); }
@@ -1300,6 +1363,7 @@ async function saveCustomVideos(){
 }
 
 async function loadCustomSituations(){
+  customSituations = [];
   try{
     const v = await storageGet('custom-situations');
     if(v){ customSituations = JSON.parse(v); }
@@ -1310,6 +1374,8 @@ async function saveCustomSituations(){
 }
 
 async function loadRatings(){
+  topicRatings = {};
+  patternRatings = {};
   try{
     const v = await storageGet('topic-ratings');
     if(v){ topicRatings = JSON.parse(v); }
@@ -1324,6 +1390,16 @@ async function saveTopicRatings(){
 }
 async function savePatternRatings(){
   await storageSet('pattern-ratings', JSON.stringify(patternRatings));
+}
+
+async function loadAllUserData(){
+  await loadProgress();
+  await loadCustomPhrases();
+  await loadCustomParagraphs();
+  await loadCustomPatterns();
+  await loadCustomVideos();
+  await loadCustomSituations();
+  await loadRatings();
 }
 
 function sortByRating(list, ratingsMap){
@@ -1519,6 +1595,7 @@ document.getElementById('micModalOverlay').onclick = (e) => {
    behave identically. */
 const SCREEN_FUNCS = {
   home: renderHome,
+  userGate: renderUserGate,
   topicList: renderTopicList,
   dialogue: renderDialogue,
   situationDetail: renderSituationDetail,
@@ -1547,6 +1624,41 @@ window.addEventListener('popstate', (e) => {
   }
 });
 
+/* ============ RENDER: USER GATE (name entry / switch user) ============ */
+function renderUserGate(){
+  const app = document.getElementById('app');
+  const isSwitch = !!currentUser;
+  app.innerHTML = `
+    <div style="min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:32px 28px calc(32px + var(--safe-b));">
+      <div class="hero-eyebrow">${isSwitch ? 'SWITCH USER' : 'WELCOME'}</div>
+      <div class="hero-title" style="font-size:24px; margin-bottom:12px;">${isSwitch ? '다른 이름으로<br/>전환할까요?' : 'Talk Lab에 오신 걸<br/>환영해요!'}</div>
+      <div class="hero-desc" style="margin-bottom:20px;">${isSwitch ? '전환하시면 그 이름으로 등록된 표현·문단·상황이 보여요. 처음 쓰는 이름이면 새로 시작돼요.' : '사용하실 이름을 입력해주세요. 등록한 표현·문단·상황이 이름별로 따로 저장돼요.'}</div>
+      <div class="form-group" style="padding:0;">
+        <input class="form-input" id="usernameInput" placeholder="예: 상영" maxlength="24" value="${isSwitch ? escapeHtml(currentUser) : ''}" />
+      </div>
+      <button class="form-save-btn" id="usernameSubmitBtn" style="margin:14px 0 0; margin-left:0; margin-right:0;">${isSwitch ? '전환하기' : '시작하기'}</button>
+      ${isSwitch ? `<button class="add-phrase-btn" id="usernameCancelBtn" style="background:var(--paper); color:var(--ink); border:1.5px solid var(--line); margin-left:0; margin-right:0;">취소</button>` : ''}
+    </div>
+  `;
+  const submit = async () => {
+    const raw = document.getElementById('usernameInput').value;
+    const name = sanitizeUsername(raw);
+    if(!name){ showToast('이름을 입력해주세요.'); return; }
+    saveUsernameLocal(name);
+    currentUser = name;
+    await loadAllUserData();
+    renderHome();
+    history.replaceState({ name:'home', args:[] }, '');
+  };
+  document.getElementById('usernameSubmitBtn').onclick = submit;
+  document.getElementById('usernameInput').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') submit();
+  });
+  if(isSwitch){
+    document.getElementById('usernameCancelBtn').onclick = () => history.back();
+  }
+}
+
 function renderHome(){
   currentTopic = null;
   const app = document.getElementById('app');
@@ -1561,6 +1673,7 @@ function renderHome(){
         <div class="topbar-title">🎙 Talk Lab</div>
         <div class="topbar-sub">일상 영어 회화 연습</div>
       </div>
+      <button class="counter" id="userChipBtn" style="border:none; cursor:pointer; margin-right:6px;" title="사용자 전환">👤 ${escapeHtml(currentUser || '')}</button>
       <div class="counter">${String(totalPracticed).padStart(3,'0')}/${String(totalLines).padStart(3,'0')}</div>
     </div>
     <div class="hero">
@@ -1602,6 +1715,7 @@ function renderHome(){
       </div>
     </div>
   `;
+  document.getElementById('userChipBtn').onclick = () => goTo('userGate');
   document.getElementById('situationModeCard').onclick = () => goTo('topicList');
   document.getElementById('phraseModeCard').onclick = () => goTo('phraseHome');
   document.getElementById('videoModeCard').onclick = () => goTo('videoHome');
@@ -2419,13 +2533,14 @@ function deleteCustomParagraph(id){
 
 /* ============ INIT ============ */
 (async function init(){
-  await loadProgress();
-  await loadCustomPhrases();
-  await loadCustomParagraphs();
-  await loadCustomPatterns();
-  await loadCustomVideos();
-  await loadCustomSituations();
-  await loadRatings();
+  await migrateLegacyDataToSangyoung();
+  currentUser = loadUsernameLocal();
+  if(!currentUser){
+    renderUserGate();
+    history.replaceState({ name:'userGate', args:[] }, '');
+    return;
+  }
+  await loadAllUserData();
   renderHome();
   history.replaceState({ name:'home', args:[] }, '');
 })();
