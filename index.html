@@ -365,6 +365,24 @@
     cursor:pointer; font-family:'Work Sans', sans-serif;
   }
   .empty-hint{ padding: 6px 20px 4px; font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+  .sample-toggle-btn{
+    display:block; margin: 2px 18px 10px; background:none; border:none; color:var(--teal);
+    font-weight:700; font-size:12.5px; cursor:pointer; padding:0;
+    text-decoration:underline; text-underline-offset:2px; font-family:'Work Sans', sans-serif;
+  }
+  .sample-box{
+    margin: 0 18px 14px; background:var(--teal-soft); border:1px solid #c6e3dc; border-radius:12px;
+    padding:12px 14px;
+  }
+  .sample-box pre{
+    font-family:'Space Mono', monospace; font-size:11.5px; line-height:1.7; color:var(--ink);
+    white-space:pre-wrap; word-break:break-word; margin:0;
+  }
+  .sample-use-btn{
+    margin-top:10px; margin-right:8px; background:var(--paper); border:1.5px solid var(--line); border-radius:20px;
+    padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+  }
   .para-title{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px; margin-bottom:4px; }
   .para-preview{ font-size:13.5px !important; font-weight:400 !important; color:var(--ink-soft); line-height:1.5; }
   .para-meta{
@@ -1801,11 +1819,25 @@ function renderAddSituationForm(editId){
 이 양식 먼저 작성해주시겠어요?">${editing ? escapeHtml(patternToText(editing.titleEn, editing.titleKo, editing.examples)) : ''}</textarea>
       </div>
       <div class="empty-hint">형식: 1번째 줄 = 상황 제목(영어) · 2번째 줄 = 한글 제목 · 그 다음부터 "번호. 영어문장" 한 줄 + 한글 번역 한 줄을 예문 개수만큼 반복</div>
+      <button class="sample-toggle-btn" id="sitSampleToggleBtn">📋 예시 형식 보기</button>
+      <div class="sample-box" id="sitSampleBox" style="display:none;">
+        <pre>Checking In at a Clinic
+병원 접수하기
+1. Hi, I have a 3 o'clock appointment with Dr. Lee.
+안녕하세요, 3시에 이 선생님과 예약이 있어요.
+2. Could you fill out this form first?
+이 양식 먼저 작성해주시겠어요?</pre>
+        <button class="sample-use-btn" id="sitSampleUseBtn">이 예시 그대로 채워넣기</button>
+        <button class="sample-use-btn" id="sitSampleCopyBtn">📄 복사하기</button>
+      </div>
       <button class="form-save-btn" id="sitSubmitBtn">${editing ? '수정 저장하기' : '추가하기'}</button>
       <div id="sitPreviewArea"></div>
     </div>
   `;
   document.getElementById('addSitBackBtn').onclick = () => history.back();
+  setupSampleToggle(null, 'sitSampleToggleBtn', 'sitSampleBox', 'sitSampleUseBtn',
+    "Checking In at a Clinic\n병원 접수하기\n1. Hi, I have a 3 o'clock appointment with Dr. Lee.\n안녕하세요, 3시에 이 선생님과 예약이 있어요.\n2. Could you fill out this form first?\n이 양식 먼저 작성해주시겠어요?",
+    'sitPasteInput', 'sitSampleCopyBtn');
   document.getElementById('sitSubmitBtn').onclick = async () => {
     const raw = document.getElementById('sitPasteInput').value;
     const parsed = parsePatternText(raw);
@@ -2336,6 +2368,56 @@ function patternToText(titleLine, titleKo, examples){
   return lines.join('\n');
 }
 
+/* Wires up a "show sample format" toggle button + reference box under a
+   paste-format textarea. sampleText is the example shown; textareaId is the
+   input the "이 예시 그대로 채워넣기" button will fill. */
+async function copyToClipboard(text){
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(text);
+      showToast('복사됐어요!');
+      return;
+    }
+  }catch(e){ /* fall through to legacy method */ }
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast(ok ? '복사됐어요!' : '복사에 실패했어요. 직접 선택해서 복사해주세요.');
+  }catch(e){
+    showToast('복사에 실패했어요. 직접 선택해서 복사해주세요.');
+  }
+}
+
+function setupSampleToggle(containerId, toggleBtnId, boxId, useBtnId, sampleText, textareaId, copyBtnId){
+  const toggleBtn = document.getElementById(toggleBtnId);
+  const box = document.getElementById(boxId);
+  let shown = false;
+  toggleBtn.onclick = () => {
+    shown = !shown;
+    box.style.display = shown ? 'block' : 'none';
+    toggleBtn.textContent = shown ? '📋 예시 형식 숨기기' : '📋 예시 형식 보기';
+  };
+  const useBtn = document.getElementById(useBtnId);
+  if(useBtn){
+    useBtn.onclick = () => {
+      document.getElementById(textareaId).value = sampleText;
+    };
+  }
+  if(copyBtnId){
+    const copyBtn = document.getElementById(copyBtnId);
+    if(copyBtn){
+      copyBtn.onclick = () => copyToClipboard(sampleText);
+    }
+  }
+}
+
 function renderPastePatternForm(editId){
   const editing = editId ? customPatterns.find(p => p.id === editId) : null;
   const app = document.getElementById('app');
@@ -2358,11 +2440,25 @@ function renderPastePatternForm(editId){
 마감일이 조금 우려돼.">${editing ? escapeHtml(patternToText(editing.pattern, editing.titleKo, editing.examples)) : ''}</textarea>
       </div>
       <div class="empty-hint">형식: 1번째 줄 = 영어 패턴 · 2번째 줄 = 한글 제목 · 그 다음부터 "번호. 영어문장" 한 줄 + 한글 번역 한 줄을 예문 개수만큼 반복</div>
+      <button class="sample-toggle-btn" id="pasteSampleToggleBtn">📋 예시 형식 보기</button>
+      <div class="sample-box" id="pasteSampleBox" style="display:none;">
+        <pre>I'm worried about ~ / I'm concerned that ~
+걱정 · 우려 표현
+1. I'm worried about my English pronunciation.
+내 영어 발음이 걱정스러워.
+2. I'm a little concerned about the deadline.
+마감일이 조금 우려돼.</pre>
+        <button class="sample-use-btn" id="pasteSampleUseBtn">이 예시 그대로 채워넣기</button>
+        <button class="sample-use-btn" id="pasteSampleCopyBtn">📄 복사하기</button>
+      </div>
       <button class="form-save-btn" id="pasteSubmitBtn">${editing ? '수정 저장하기' : '추가하기'}</button>
       <div id="pastePreviewArea"></div>
     </div>
   `;
   document.getElementById('pasteBackBtn').onclick = () => history.back();
+  setupSampleToggle(null, 'pasteSampleToggleBtn', 'pasteSampleBox', 'pasteSampleUseBtn',
+    "I'm worried about ~ / I'm concerned that ~\n걱정 · 우려 표현\n1. I'm worried about my English pronunciation.\n내 영어 발음이 걱정스러워.\n2. I'm a little concerned about the deadline.\n마감일이 조금 우려돼.",
+    'pasteInput', 'pasteSampleCopyBtn');
   document.getElementById('pasteSubmitBtn').onclick = async () => {
     const raw = document.getElementById('pasteInput').value;
     const parsed = parsePatternText(raw);
