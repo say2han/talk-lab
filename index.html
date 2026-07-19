@@ -1212,6 +1212,8 @@ let customVideos = [];      // [{id, title, videoId}]
 let customSituations = [];  // [{id, icon, titleEn, titleKo, examples:[{en,ko}]}]
 let topicRatings = {};      // { topicId: 1|2|3 }
 let patternRatings = {};    // { patternId: 1|2|3 }
+let deletedBuiltinTopics = [];    // [topicId, ...] — built-in situations the user removed
+let deletedBuiltinPatterns = [];  // [patternId, ...] — built-in phrase patterns the user removed
 let recordings = {};        // { "topicId-lineIndex": {blobUrl, blob} }
 let mediaRecorder = null;
 let mediaChunks = [];
@@ -1410,6 +1412,25 @@ async function savePatternRatings(){
   await storageSet('pattern-ratings', JSON.stringify(patternRatings));
 }
 
+async function loadDeletedBuiltins(){
+  deletedBuiltinTopics = [];
+  deletedBuiltinPatterns = [];
+  try{
+    const v = await storageGet('deleted-builtin-topics');
+    if(v){ deletedBuiltinTopics = JSON.parse(v); }
+  }catch(e){ deletedBuiltinTopics = []; }
+  try{
+    const v2 = await storageGet('deleted-builtin-patterns');
+    if(v2){ deletedBuiltinPatterns = JSON.parse(v2); }
+  }catch(e){ deletedBuiltinPatterns = []; }
+}
+async function saveDeletedBuiltinTopics(){
+  await storageSet('deleted-builtin-topics', JSON.stringify(deletedBuiltinTopics));
+}
+async function saveDeletedBuiltinPatterns(){
+  await storageSet('deleted-builtin-patterns', JSON.stringify(deletedBuiltinPatterns));
+}
+
 async function loadAllUserData(){
   await loadProgress();
   await loadCustomPhrases();
@@ -1418,6 +1439,7 @@ async function loadAllUserData(){
   await loadCustomVideos();
   await loadCustomSituations();
   await loadRatings();
+  await loadDeletedBuiltins();
 }
 
 function sortByRating(list, ratingsMap){
@@ -1760,9 +1782,9 @@ function renderTopicList(){
   document.getElementById('addSituationBtn').onclick = () => goTo('addSituationForm');
 
   const list = document.getElementById('topicList');
-  const builtIn = TOPICS.map(t => ({ ...t, _kind:'builtin' }));
+  const builtIn = TOPICS.filter(t => !deletedBuiltinTopics.includes(t.id)).map(t => ({ ...t, _kind:'builtin' }));
   const custom = customSituations.map(s => ({ ...s, _kind:'custom' }));
-  const merged = sortByRating([...builtIn, ...custom], topicRatings);
+  const merged = sortByRating([...custom, ...builtIn], topicRatings);
 
   merged.forEach(t => {
     const isCustom = t._kind === 'custom';
@@ -1851,7 +1873,7 @@ function renderAddSituationForm(editId){
       editing.titleKo = parsed.titleKo;
       editing.examples = parsed.examples;
     } else {
-      customSituations.push({
+      customSituations.unshift({
         id: Date.now().toString(),
         icon: '📍',
         color: 'var(--gold-soft)',
@@ -2077,7 +2099,7 @@ function renderAddVideoForm(){
     if(!title || !url){ showToast('제목과 링크를 모두 입력해주세요.'); return; }
     const videoId = parseYouTubeId(url);
     if(!videoId){ showToast('유튜브 링크를 확인해주세요.'); return; }
-    customVideos.push({ id: Date.now().toString(), title, videoId });
+    customVideos.unshift({ id: Date.now().toString(), title, videoId });
     await saveCustomVideos();
     history.back();
   };
@@ -2098,6 +2120,7 @@ function renderDialogue(topicId){
         <div class="topbar-sub">${topic.titleKo}</div>
       </div>
       <div class="counter" id="dlgCounter"></div>
+      <button class="back-btn" id="dlgDelBtn" title="삭제" style="margin-left:6px;">🗑</button>
     </div>
     ${linkedVideo ? `
       <div class="video-banner" id="jumpToVideo">
@@ -2112,6 +2135,14 @@ function renderDialogue(topicId){
     </div>
   `;
   document.getElementById('backBtn').onclick = () => history.back();
+  document.getElementById('dlgDelBtn').onclick = () => {
+    if(!confirm('기본 제공 상황이에요. 목록에서 삭제할까요? (나중에 되돌릴 수 없어요)')) return;
+    if(!deletedBuiltinTopics.includes(topicId)) deletedBuiltinTopics.push(topicId);
+    delete topicRatings[topicId];
+    saveDeletedBuiltinTopics();
+    saveTopicRatings();
+    history.back();
+  };
   const jumpEl = document.getElementById('jumpToVideo');
   if(jumpEl && linkedVideo){
     jumpEl.onclick = () => goTo('videoDetail', linkedVideo.id, 'builtin');
@@ -2266,9 +2297,9 @@ function renderPhraseHome(){
   }
 
   const patternList = document.getElementById('patternList');
-  const builtIn = PHRASE_CATEGORIES.map(c => ({ ...c, _kind:'builtin' }));
+  const builtIn = PHRASE_CATEGORIES.filter(c => !deletedBuiltinPatterns.includes(c.id)).map(c => ({ ...c, _kind:'builtin' }));
   const custom = customPatterns.map(c => ({ ...c, _kind:'custom' }));
-  const merged = sortByRating([...builtIn, ...custom], patternRatings);
+  const merged = sortByRating([...custom, ...builtIn], patternRatings);
 
   merged.forEach(cat => {
     const isCustom = cat._kind === 'custom';
@@ -2307,22 +2338,29 @@ function renderPatternDetail(id, isCustom){
         <div class="topbar-title">${pattern.icon} ${escapeHtml(pattern.pattern)}</div>
         <div class="topbar-sub">${escapeHtml(pattern.titleKo)}</div>
       </div>
-      ${isCustom ? `<button class="back-btn" id="patternEditBtn" title="수정" style="margin-right:6px;">✏️</button><button class="back-btn" id="patternDelBtn" title="삭제">🗑</button>` : ''}
+      ${isCustom ? `<button class="back-btn" id="patternEditBtn" title="수정" style="margin-right:6px;">✏️</button>` : ''}<button class="back-btn" id="patternDelBtn" title="삭제">🗑</button>
     </div>
     <div class="phrase-list" id="exampleList" style="padding-top:14px;"></div>
   `;
   document.getElementById('catBackBtn').onclick = () => history.back();
   if(isCustom){
     document.getElementById('patternEditBtn').onclick = () => goTo('pastePatternForm', pattern.id);
-    document.getElementById('patternDelBtn').onclick = () => {
-      if(!confirm('이 패턴을 삭제할까요?')) return;
+  }
+  document.getElementById('patternDelBtn').onclick = () => {
+    if(!confirm(isCustom ? '이 패턴을 삭제할까요?' : '기본 제공 패턴이에요. 목록에서 삭제할까요? (나중에 되돌릴 수 없어요)')) return;
+    if(isCustom){
       customPatterns = customPatterns.filter(p => p.id !== pattern.id);
       delete patternRatings[pattern.id];
       saveCustomPatterns();
       savePatternRatings();
-      history.back();
-    };
-  }
+    } else {
+      if(!deletedBuiltinPatterns.includes(pattern.id)) deletedBuiltinPatterns.push(pattern.id);
+      delete patternRatings[pattern.id];
+      saveDeletedBuiltinPatterns();
+      savePatternRatings();
+    }
+    history.back();
+  };
   const list = document.getElementById('exampleList');
   const keyPrefix = isCustom ? `custompat-${pattern.id}` : `cat-${pattern.id}`;
   pattern.examples.forEach((ex, idx) => {
@@ -2472,7 +2510,7 @@ function renderPastePatternForm(editId){
       editing.titleKo = parsed.titleKo;
       editing.examples = parsed.examples;
     } else {
-      customPatterns.push({
+      customPatterns.unshift({
         id: Date.now().toString(),
         icon: '📋',
         pattern: parsed.pattern,
@@ -2578,7 +2616,7 @@ function renderAddParagraphForm(editId){
       await saveCustomParagraphs();
       history.back();
     } else {
-      customParagraphs.push({ id: Date.now().toString(), title, text, ko });
+      customParagraphs.unshift({ id: Date.now().toString(), title, text, ko });
       await saveCustomParagraphs();
       history.back();
     }
